@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Plus } from 'lucide-react';
 import AnimatedText from '../components/AnimatedText';
+import ContactButton from '../components/ContactButton';
 import FadeIn from '../components/FadeIn';
 import Orb from '../components/Orb';
 import PageNav from '../components/PageNav';
@@ -12,15 +13,7 @@ import StickyCta from '../components/StickyCta';
 import TitleMarquee from '../components/TitleMarquee';
 import WordReveal from '../components/WordReveal';
 import { SERVICES, SERVICE_BY_SLUG } from '../data/services';
-import { CONTACT, PROFILE } from '../data/profile';
-
-/** The gradient the home page's contact button uses. Same ask, same button. */
-const CTA_GRADIENT: CSSProperties = {
-  background: 'linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)',
-  boxShadow: '0px 4px 4px rgba(181, 1, 167, 0.25), 4px 4px 12px #7721B1 inset',
-  outline: '2px solid #FFFFFF',
-  outlineOffset: '-3px',
-};
+import { PROFILE } from '../data/profile';
 
 export default function ServicePage() {
   const { slug } = useParams();
@@ -29,10 +22,6 @@ export default function ServicePage() {
   if (!service) return <Navigate to="/" replace />;
 
   const others = SERVICES.filter((s) => s.slug !== service.slug).slice(0, 4);
-
-  // The subject line saves the prospect writing one, and tells me which page
-  // the enquiry came from without any analytics involved.
-  const mailto = `mailto:${CONTACT.email}?subject=${encodeURIComponent(`${service.name} enquiry`)}`;
 
   return (
     <article>
@@ -116,16 +105,13 @@ export default function ServicePage() {
 
           <FadeIn delay={0.36} y={20}>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-              <a
-                href={mailto}
-                className="inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-xs
-                  font-medium uppercase tracking-widest text-white transition-transform duration-200
-                  hover:scale-[1.03] active:scale-[0.98] sm:text-sm"
-                style={CTA_GRADIENT}
-              >
-                Start a project
-                <ArrowUpRight size={17} strokeWidth={2.5} aria-hidden="true" />
-              </a>
+              <ContactButton
+                label="Start a project"
+                showArrow
+                subject={`${service.name} enquiry`}
+                whatsappMessage={`Hi Ali, I'm interested in ${service.name} and want to discuss a project.`}
+                align="start"
+              />
 
               {/* A plain anchor, not a router Link: this leaves for a hash on
                   another route, and the browser handles that scroll properly. */}

@@ -1,14 +1,25 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Mail, X } from 'lucide-react';
+import { MessageCircle, Mail, X, ArrowUpRight } from 'lucide-react';
 import { CONTACT } from '../data/profile';
 
 type ContactButtonProps = {
   label?: string;
   className?: string;
+  showArrow?: boolean;
+  subject?: string;
+  whatsappMessage?: string;
+  align?: 'start' | 'center' | 'end';
 };
 
-export default function ContactButton({ label = 'Contact Me', className = '' }: ContactButtonProps) {
+export default function ContactButton({
+  label = 'Contact Me',
+  className = '',
+  showArrow = false,
+  subject,
+  whatsappMessage,
+  align = 'end',
+}: ContactButtonProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -36,11 +47,18 @@ export default function ContactButton({ label = 'Contact Me', className = '' }: 
 
   const rawPhone = CONTACT.whatsapp.replace(/[^0-9]/g, '');
   const whatsappUrl = `https://wa.me/${rawPhone}?text=${encodeURIComponent(
-    'Hi Ali, I saw your portfolio and want to discuss a project.'
+    whatsappMessage || 'Hi Ali, I saw your portfolio and want to discuss a project.'
   )}`;
   const mailtoUrl = `mailto:${CONTACT.email}?subject=${encodeURIComponent(
-    'Project Inquiry — Ali'
+    subject || 'Project Inquiry — Ali'
   )}`;
+
+  const alignClass =
+    align === 'start'
+      ? 'justify-start'
+      : align === 'center'
+        ? 'justify-center'
+        : 'justify-center sm:justify-end';
 
   return (
     <div ref={containerRef} className={`relative inline-flex items-center ${className}`}>
@@ -68,6 +86,7 @@ export default function ContactButton({ label = 'Contact Me', className = '' }: 
             }}
           >
             {label}
+            {showArrow && <ArrowUpRight size={17} strokeWidth={2.5} aria-hidden="true" />}
           </motion.button>
         ) : (
           <motion.div
@@ -76,7 +95,7 @@ export default function ContactButton({ label = 'Contact Me', className = '' }: 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 4 }}
             transition={{ duration: 0.2 }}
-            className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-2.5"
+            className={`flex flex-wrap items-center gap-2 sm:gap-2.5 ${alignClass}`}
           >
             {/* WhatsApp Pill */}
             <a
