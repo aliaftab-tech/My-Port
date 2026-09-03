@@ -72,7 +72,7 @@ export default function ContactButton({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.18 }}
-            className="inline-block rounded-full text-white font-medium uppercase tracking-widest
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-white font-medium uppercase tracking-widest
               px-8 py-3 sm:px-10 sm:py-3.5 md:px-12 md:py-4
               text-xs sm:text-sm md:text-base cursor-pointer
               transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98]"
@@ -85,8 +85,8 @@ export default function ContactButton({
               outlineOffset: '-3px',
             }}
           >
-            {label}
-            {showArrow && <ArrowUpRight size={17} strokeWidth={2.5} aria-hidden="true" />}
+            <span>{label}</span>
+            {showArrow && <ArrowUpRight size={17} strokeWidth={2.5} className="shrink-0" aria-hidden="true" />}
           </motion.button>
         ) : (
           <motion.div
