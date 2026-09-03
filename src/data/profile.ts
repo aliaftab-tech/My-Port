@@ -24,7 +24,7 @@ export const CONTACT = {
   // section and footer. Leave a value as an empty string to hide that link.
   whatsapp: '+92 320 4621535',
   github: 'https://github.com/aliaftab-tech',
-  linkedin: '', // e.g. 'https://linkedin.com/in/your-handle'
+  linkedin: 'https://www.linkedin.com/in/aliaftab-dev/',
 };
 
 // Rooted at "/" rather than bare fragments so the same list works on the home
