@@ -18,7 +18,7 @@ export const PROFILE = {
 };
 
 export const CONTACT = {
-  email: 'allirajput23@gmail.com',
+  email: 'hello@aliaftab.dev',
 
   // TODO(Ali): fill these in and they'll appear automatically in the contact
   // section and footer. Leave a value as an empty string to hide that link.
