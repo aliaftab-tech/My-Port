@@ -122,7 +122,7 @@ function Row({
             src={tile.src}
             srcSet={srcSetFor(tile.src)}
             sizes={MARQUEE_SIZES[tile.shape]}
-            alt=""
+            alt={tile.alt}
             loading="lazy"
             decoding="async"
             // A logo is fitted, never cropped — the tile and the file are both

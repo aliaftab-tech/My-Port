@@ -325,7 +325,7 @@ export const PROJECT_BY_SLUG = new Map(PROJECTS.map((p) => [p.slug, p]));
  * so each tile carries its shape and the strip sizes its box to match —
  * dropping a portrait shot into a landscape box zooms it to a blurry sliver.
  */
-export type MarqueeTile = { src: string; shape: 'wide' | 'phone' | 'logo' };
+export type MarqueeTile = { src: string; shape: 'wide' | 'phone' | 'logo'; alt: string };
 
 /**
  * Strip order. Noxesol leads because its mark is the strongest of the five and
@@ -339,11 +339,14 @@ const MARQUEE_ORDER = ['noxesol', 'speaklab', 'nazir', 'athenaeum', 'alielectron
  * anonymous UI — a visitor recognising one name is worth more than a fourth
  * screenshot of a site they don't.
  */
-export const MARQUEE_TILES: MarqueeTile[] = MARQUEE_ORDER.flatMap((slug): MarqueeTile[] => [
-  { src: `/projects/${slug}-wide.webp`, shape: 'wide' },
-  ...(LOGO_SLUGS.has(slug)
-    ? [{ src: `/projects/${slug}-logo.webp`, shape: 'logo' as const }]
-    : []),
-  { src: `/projects/${slug}-mid.webp`, shape: 'wide' },
-  { src: `/projects/${slug}-phone.webp`, shape: 'phone' },
-]);
+export const MARQUEE_TILES: MarqueeTile[] = MARQUEE_ORDER.flatMap((slug): MarqueeTile[] => {
+  const name = PROJECT_BY_SLUG.get(slug)?.name ?? slug;
+  return [
+    { src: `/projects/${slug}-wide.webp`, shape: 'wide', alt: `${name} website desktop preview` },
+    ...(LOGO_SLUGS.has(slug)
+      ? [{ src: `/projects/${slug}-logo.webp`, shape: 'logo' as const, alt: `${name} logo` }]
+      : []),
+    { src: `/projects/${slug}-mid.webp`, shape: 'wide', alt: `${name} website screenshot` },
+    { src: `/projects/${slug}-phone.webp`, shape: 'phone', alt: `${name} website mobile preview` },
+  ];
+});
