@@ -23,7 +23,7 @@ export const CONTACT = {
   // TODO(Ali): fill these in and they'll appear automatically in the contact
   // section and footer. Leave a value as an empty string to hide that link.
   whatsapp: '', // e.g. '+92 300 1234567'
-  github: '', // e.g. 'https://github.com/your-handle'
+  github: 'https://github.com/aliaftab-tech',
   linkedin: '', // e.g. 'https://linkedin.com/in/your-handle'
 };
 
