@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0C0C0C" />
+
+    <!--
+      The preloader's off switch, and it has to be here rather than in React.
+
+      The curtain ships inside the prerendered HTML so that the first frame the
+      browser paints is already the curtain — anything added on mount would
+      flash the page first and then cover it. The cost of that is a curtain
+      that would otherwise replay on every reload, which is charming once and
+      tiresome by the third time.
+
+      This runs before the first paint and before the stylesheet has anything
+      to lay out, so a visitor who has already seen it this session never sees
+      a frame of it. Doing the same check inside the component would be two
+      frames too late, and doing it in the initial state would desync the
+      client's first render from the prerendered markup.
+
+      Blocking and inline is the point. Deferring it defeats it entirely.
+    -->
+    <script>
+      try {
+        if (sessionStorage.getItem('aa:preloaded') !== null) {
+          document.documentElement.dataset.preloaded = '1';
+        }
+      } catch (e) {
+        /* Storage blocked. The curtain runs; nothing breaks. */
+      }
+    </script>
+
+    <!--seo-->
+    <!--
+      Everything between the seo markers is the home page's metadata, and it is
+      replaced per route by scripts/prerender.mjs at build time. Edit the
+      source of truth in src/lib/seo.ts rather than here — this copy is what
+      ships if prerendering is ever switched off.
+    -->
+    <title>Ali Aftab — Web Developer in Lahore | AI & WhatsApp Automation</title>
+    <meta
+      name="description"
+      content="Ali Aftab is a web developer in Lahore, Pakistan building fast websites, storefronts and mobile apps — plus WhatsApp automation bots, AI call agents, SEO and GEO. React, TypeScript and Supabase."
+    />
+    <meta name="author" content="Ali Aftab" />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <link rel="canonical" href="https://aliaftab.dev/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Ali Aftab" />
+    <meta property="og:locale" content="en_US" />
+    <meta
+      property="og:title"
+      content="Ali Aftab — Web Developer in Lahore | AI & WhatsApp Automation"
+    />
+    <meta
+      property="og:description"
+      content="Websites, storefronts and mobile apps, plus WhatsApp automation bots and AI call agents — built to load fast and get found."
+    />
+    <meta property="og:url" content="https://aliaftab.dev/" />
+    <meta property="og:image" content="https://aliaftab.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ali Aftab — web developer, Lahore, Pakistan" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Ali Aftab — Web Developer in Lahore | AI & WhatsApp Automation"
+    />
+    <meta
+      name="twitter:description"
+      content="Websites, storefronts and mobile apps, plus WhatsApp automation bots and AI call agents."
+    />
+    <meta name="twitter:image" content="https://aliaftab.dev/og-image.png" />
+    <!--/seo-->
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      Structured data. This is what search engines and AI assistants read to
+      work out *who* this is and *what* he sells — it sits in the raw HTML, so
+      crawlers that don't run JavaScript (most AI crawlers) still get the full
+      picture even though the page itself renders client-side.
+
+      TODO(Ali): fill `sameAs` with your GitHub, LinkedIn and any profile you
+      control (Upwork, Fiverr, X, Instagram). Matching profiles across sites are
+      the strongest signal that these are all one real person, and it's the
+      cheapest ranking win left on this page. Add `telephone` too once the
+      WhatsApp number goes in src/data/profile.ts.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://aliaftab.dev/#person",
+            "name": "Ali Aftab",
+            "url": "https://aliaftab.dev/",
+            "image": "https://aliaftab.dev/me.webp",
+            "email": "mailto:allirajput23@gmail.com",
+            "jobTitle": "Web Developer",
+            "description": "Web developer in Lahore, Pakistan. Builds websites, storefronts, mobile apps, WhatsApp automation bots and AI call agents.",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Lahore",
+              "addressRegion": "Punjab",
+              "addressCountry": "PK"
+            },
+            "knowsLanguage": ["en", "ur"],
+            "knowsAbout": [
+              "Web development",
+              "React",
+              "TypeScript",
+              "Next-generation e-commerce",
+              "Supabase",
+              "React Native",
+              "WhatsApp Cloud API automation",
+              "AI voice call agents",
+              "Large language model integration",
+              "Search engine optimisation",
+              "Generative engine optimisation"
+            ],
+            "sameAs": []
+          },
+          {
+            "@type": "ProfessionalService",
+            "@id": "https://aliaftab.dev/#business",
+            "name": "Ali Aftab — Web Development & AI Automation",
+            "url": "https://aliaftab.dev/",
+            "image": "https://aliaftab.dev/og-image.png",
+            "email": "mailto:allirajput23@gmail.com",
+            "founder": { "@id": "https://aliaftab.dev/#person" },
+            "priceRange": "PKR 25,000–150,000+",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Lahore",
+              "addressRegion": "Punjab",
+              "addressCountry": "PK"
+            },
+            "areaServed": [
+              { "@type": "City", "name": "Lahore" },
+              { "@type": "Country", "name": "Pakistan" },
+              { "@type": "Place", "name": "Worldwide (remote)" }
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Web Development",
+                    "description": "Custom sites built with React and TypeScript — no page builders, no template bloat."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "E-Commerce Development",
+                    "description": "Storefronts with real carts, checkout, order tracking and an admin panel, backed by Supabase."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Mobile App Development",
+                    "description": "Cross-platform iOS and Android apps with React Native and Expo, sharing one backend with the web."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "WhatsApp Automation",
+                    "description": "Bots on the official WhatsApp Cloud API — order updates, catalogue browsing, lead qualification and 24/7 replies with human handoff."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "AI Call Agents",
+                    "description": "Voice agents that answer inbound calls and make outbound calls in Urdu or English, booking appointments and logging every call to a CRM."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "AI Integration",
+                    "description": "Chatbots, tutors and assistants powered by modern language models, designed into the product rather than bolted on."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Workflow Automation",
+                    "description": "Forms into a CRM, orders into sheets, payments into invoices, alerts into the inbox the team already watches."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "SEO & Web Performance",
+                    "description": "Prerendering, structured data and Core Web Vitals work so the site loads fast and ranks."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "GEO & LLM Optimisation",
+                    "description": "Generative engine optimisation — entity markup and citable pages so ChatGPT, Gemini, Perplexity and Google AI Overviews recommend the business by name."
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://aliaftab.dev/#website",
+            "url": "https://aliaftab.dev/",
+            "name": "Ali Aftab",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://aliaftab.dev/#person" }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!--
+      The page renders client-side, so a crawler that doesn't execute
+      JavaScript sees an empty <div id="root">. This block is the no-JS
+      fallback: the same facts as the rendered page, in plain HTML. Keep it in
+      step with src/data/profile.ts and src/data/projects.ts — it only helps
+      while it says the same thing the visible page says.
+    -->
+    <noscript>
+      <div style="color: #d7e2ea; background: #0c0c0c; padding: 2rem; font-family: sans-serif">
+        <h1>Ali Aftab — Web Developer in Lahore, Pakistan</h1>
+        <p>
+          I build fast websites, online stores and mobile apps, and I automate the parts of a
+          business that eat someone's whole day — WhatsApp replies, phone calls, follow-ups. Based
+          in Lahore, working with clients in Pakistan and abroad. Email
+          <a href="mailto:allirajput23@gmail.com" style="color: #bbccd7">allirajput23@gmail.com</a>.
+        </p>
+
+        <h2>Services</h2>
+        <ul>
+          <li><strong>Web Development</strong> — custom React and TypeScript sites, no page builders.</li>
+          <li><strong>E-Commerce</strong> — storefronts with carts, checkout, order tracking and an admin panel.</li>
+          <li><strong>Mobile Apps</strong> — one React Native and Expo codebase on iOS and Android.</li>
+          <li><strong>WhatsApp Automation</strong> — official Cloud API bots for order updates, catalogues, lead qualification and 24/7 replies.</li>
+          <li><strong>AI Call Agents</strong> — voice agents answering and making calls in Urdu or English, booking appointments and logging to your CRM.</li>
+          <li><strong>AI Integration</strong> — chatbots, tutors and assistants built on modern language models.</li>
+          <li><strong>Workflow Automation</strong> — forms to CRM, orders to sheets, payments to invoices.</li>
+          <li><strong>SEO &amp; Performance</strong> — prerendering, structured data and Core Web Vitals.</li>
+          <li><strong>GEO &amp; LLM Optimisation</strong> — getting named by ChatGPT, Gemini, Perplexity and Google AI Overviews.</li>
+        </ul>
+
+        <h2>Selected work</h2>
+        <ul>
+          <li><a href="https://athenaeumacademy.com/" style="color: #bbccd7">Athenaeum Academy</a> — online tuition platform for O Levels, A Levels, Matric and MDCAT.</li>
+          <li><a href="https://www.speaklabbyshayan.com/" style="color: #bbccd7">SpeakLab</a> — English communication programme in Lahore with an AI speaking tutor and an Expo app.</li>
+          <li>Noxesol — studio site for a WhatsApp automation brand, hand-written JavaScript.</li>
+          <li>Nazir &amp; Sons — prerendered storefront for a Lahore paper, fine-arts and stationery supplier.</li>
+          <li>Ali Electronics — Haier official store in Saddar Cantt, Lahore, with an AI shopping assistant.</li>
+        </ul>
+      </div>
+    </noscript>
+  </body>
+</html>

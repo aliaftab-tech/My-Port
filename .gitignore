@@ -1,0 +1,36 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build-time SSR bundle, used only by scripts/prerender.mjs
+.ssr-build
+
+# The NVIDIA key lives here in development. Committing it would put a paid API
+# key in a public repo; .env.example is the one that gets committed.
+.env
+.env.*
+!.env.example
+
+# Vercel CLI
+.vercel

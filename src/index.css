@@ -1,0 +1,1095 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body,
+  #root {
+    background: #0c0c0c;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Kanit', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Keyboard users still get a visible focus ring on the dark ground. */
+  :focus-visible {
+    outline: 2px solid #d7e2ea;
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* ---------------------------------------------------------------------- *
+   * The preloader curtain — src/components/Preloader.tsx
+   *
+   * Ships inside the prerendered HTML so the first painted frame is already
+   * the curtain, then lifts off the top of the screen. Everything here is
+   * opacity and transform, so it runs on the compositor while React hydrates
+   * underneath it; a curtain that stutters while the page loads advertises the
+   * opposite of what it is there to say.
+   *
+   * There are two clocks here and the curtain has to respect both.
+   *
+   * The intro — glow, letters, role, bar — is pure CSS, so it starts at first
+   * paint and always plays in the right order at the right speed. Driving it
+   * from setTimeout instead would start it whenever React happened to mount,
+   * which on a cold load is a different moment entirely: measured on this
+   * build, first paint landed at 2.5s (the render-blocking web font) and React
+   * had still not mounted at 3.4s.
+   *
+   * The exit cannot be pure CSS for exactly the same reason. Lifting on the
+   * paint clock uncovered a page that had not hydrated yet — no navigation, no
+   * hero heading, because every entrance reveal on this site is a class an
+   * IntersectionObserver adds and nothing had run yet. A curtain that reveals
+   * a half-empty page is worse than no curtain.
+   *
+   * So Preloader.tsx reads how far the intro has already got, waits out
+   * whatever is left of it, and only then sets `data-state="leaving"`. The
+   * curtain lifts on whichever clock is later, which is what "covering the
+   * load" actually means.
+   *
+   * Two escape hatches, and the page is unusable without either:
+   *   - `html[data-preloaded]`, set by the inline script in index.html, hides
+   *     it before first paint once this session has already seen it.
+   *   - `scripting: none` and `prefers-reduced-motion` at the bottom of this
+   *     file remove it outright — nothing would ever lift it without JS, and
+   *     a static full-screen panel is not a reduced-motion experience.
+   * ---------------------------------------------------------------------- */
+  .preloader {
+    position: fixed;
+    inset: 0;
+    /* Above everything else on the site, which tops out at 50 (ScrollProgress
+       and the chat drawer). */
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background: #0c0c0c;
+    /* Its own layer from the start, so the lift does not trigger a repaint of
+       the page that has just hydrated behind it. */
+    will-change: transform;
+  }
+
+  .preloader[data-state='leaving'] {
+    animation: preloader-lift 0.58s cubic-bezier(0.76, 0, 0.24, 1) 0.06s forwards;
+  }
+
+  /* Set by the inline script in index.html when this session has already seen
+     the curtain. It has to be CSS rather than a check inside the component,
+     because React cannot hide it until after hydration — by which point it has
+     already been on screen for a couple of frames. */
+  html[data-preloaded] .preloader {
+    display: none;
+  }
+
+  /* Nothing would ever lift it without JavaScript, so a no-JS visitor would
+     get a permanent black panel over a page that is otherwise complete. */
+  @media (scripting: none) {
+    .preloader {
+      display: none;
+    }
+  }
+
+  /* The same faint glow the hero sits in, so the reveal is a continuation
+     rather than a cut to a different-looking page. */
+  .preloader::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60% 50% at 50% 45%, rgba(187, 204, 215, 0.07), transparent 70%);
+    opacity: 0;
+    animation: preloader-glow 1.1s cubic-bezier(0.25, 0.1, 0.25, 1) 0.05s forwards;
+  }
+
+  .preloader-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* The content leaves just before the curtain does. Lifting a full-screen
+     panel with the text still on it reads as the text being thrown off the
+     screen; fading it out first reads as a reveal. */
+  .preloader[data-state='leaving'] .preloader-inner {
+    animation: preloader-inner-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  .preloader-eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: #646973;
+    /* Letter-spacing adds a trailing gap after the last character, which pushes
+       a centred line off-centre by half of it. */
+    text-indent: 0.42em;
+    opacity: 0;
+    animation: preloader-rise 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.08s forwards;
+  }
+
+  .preloader-name {
+    display: flex;
+    justify-content: center;
+    /* The mask each letter rises out of. */
+    overflow: hidden;
+    margin-top: 0.85rem;
+    font-size: clamp(2.25rem, 11vw, 5.5rem);
+    font-weight: 700;
+    /* Roomier than the type wants, because the mask is this box: at 1.05 the
+       line box crops the ascenders on Kanit's caps. */
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .preloader-name > span {
+    display: inline-block;
+    /* The space between the two names lives inside an inline-block, where it
+       would otherwise be trimmed. */
+    white-space: pre;
+    background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    transform: translate3d(0, 105%, 0);
+    animation: preloader-letter 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--letter-delay, 0s) forwards;
+  }
+
+  .preloader-role {
+    margin-top: 0.9rem;
+    font-size: clamp(0.75rem, 2.6vw, 0.875rem);
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(215, 226, 234, 0.55);
+    opacity: 0;
+    animation: preloader-rise 0.55s cubic-bezier(0.25, 0.1, 0.25, 1) 0.7s forwards;
+  }
+
+  .preloader-sep {
+    color: rgba(215, 226, 234, 0.28);
+    padding: 0 0.15em;
+  }
+
+  .preloader-bar {
+    position: relative;
+    overflow: hidden;
+    width: min(190px, 42vw);
+    height: 1px;
+    margin-top: 2rem;
+    background: rgba(215, 226, 234, 0.12);
+  }
+
+  /*
+   * A real progress bar would need something to measure, and there is nothing
+   * honest to measure here — the page behind is already rendered. This is a
+   * fixed sweep that finishes when the curtain lifts, which is the only thing
+   * it is actually reporting.
+   */
+  .preloader-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(187, 204, 215, 0.15), #bbccd7);
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: preloader-fill 1.05s cubic-bezier(0.65, 0, 0.35, 1) 0.2s forwards;
+  }
+
+  @keyframes preloader-glow {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes preloader-rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes preloader-letter {
+    to {
+      transform: none;
+    }
+  }
+
+  @keyframes preloader-fill {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes preloader-inner-out {
+    to {
+      opacity: 0;
+      transform: translate3d(0, -14px, 0);
+    }
+  }
+
+  @keyframes preloader-lift {
+    to {
+      /* 101% rather than 100% — at some zoom levels a whole-percent translate
+         leaves a one-pixel seam of curtain across the top of the page. */
+      transform: translate3d(0, -101%, 0);
+    }
+  }
+
+  .hero-heading {
+    background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /*
+   * The entrance reveal, driven by CSS rather than JavaScript.
+   *
+   * This used to be a Framer Motion `whileInView` on every element. That
+   * animates on the main thread — one style write per element per frame — and
+   * with thirty of them firing as a section scrolls past, the page dropped
+   * roughly one frame in eight. As a CSS transition on opacity and transform,
+   * the compositor runs it and the main thread does nothing at all.
+   *
+   * The custom properties are set inline by src/components/FadeIn.tsx.
+   */
+  .reveal {
+    opacity: 0;
+    transform: translate3d(var(--reveal-x, 0px), var(--reveal-y, 30px), 0);
+    transition:
+      opacity var(--reveal-duration, 0.7s) cubic-bezier(0.25, 0.1, 0.25, 1)
+        var(--reveal-delay, 0s),
+      transform var(--reveal-duration, 0.7s) cubic-bezier(0.25, 0.1, 0.25, 1)
+        var(--reveal-delay, 0s);
+  }
+
+  .reveal-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /*
+   * Without JavaScript nothing ever adds `.reveal-in`, so the page would sit
+   * there invisible. Anyone in that position gets the finished state.
+   */
+  @media (scripting: none) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /*
+   * A heading that arrives word by word. Same machinery as `.reveal` — one
+   * observed element, then pure CSS transitions with a per-word delay set
+   * inline by WordReveal.tsx, so the stagger costs the main thread nothing.
+   *
+   * `white-space: pre` because the trailing space that separates two words
+   * lives inside an inline-block, where it would otherwise be trimmed.
+   */
+  .reveal-words > span {
+    display: inline-block;
+    white-space: pre;
+    opacity: 0;
+    transform: translate3d(0, 0.5em, 0);
+    transition:
+      opacity 0.75s cubic-bezier(0.25, 0.1, 0.25, 1) var(--word-delay, 0s),
+      transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) var(--word-delay, 0s);
+  }
+
+  .reveal-words.reveal-in > span {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Nothing adds `.reveal-in` without JavaScript, so hand over the end state. */
+  @media (scripting: none) {
+    .reveal-words > span,
+    .swap-line {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /*
+   * The bordered panels used for "what you get" and the service cards. The
+   * highlight follows the cursor via two custom properties written by
+   * SpotlightCard.tsx; everything that moves here is opacity and transform, so
+   * it stays off the main thread.
+   */
+  .spotlight {
+    position: relative;
+    /*
+     * A stacking context, so the two layers below can sit at z-index -1 —
+     * behind the card's text but still in front of the card itself — without
+     * escaping to sit behind the section they're in.
+     */
+    isolation: isolate;
+    border: 1px solid rgba(215, 226, 234, 0.14);
+    transition:
+      border-color 0.35s ease,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .spotlight::before,
+  .spotlight::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  /* The resting tint. */
+  .spotlight::before {
+    background: linear-gradient(160deg, rgba(215, 226, 234, 0.05), rgba(215, 226, 234, 0));
+  }
+
+  /* The highlight under the cursor, positioned by SpotlightCard.tsx. */
+  .spotlight::after {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(
+      320px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      rgba(200, 107, 255, 0.16),
+      rgba(118, 33, 176, 0.07) 40%,
+      transparent 68%
+    );
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .spotlight:hover {
+      border-color: rgba(215, 226, 234, 0.42);
+      transform: translate3d(0, -3px, 0);
+    }
+
+    .spotlight:hover::after {
+      opacity: 1;
+    }
+  }
+
+  /* Keyboard users get the same emphasis a hover would give. */
+  .spotlight:focus-within {
+    border-color: rgba(215, 226, 234, 0.42);
+  }
+
+  /*
+   * The sub-page nav. Transparent over the hero, frosted once you have moved —
+   * the class is toggled from PageNav.tsx on a rAF-throttled scroll listener.
+   */
+  .page-nav {
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      backdrop-filter 0.3s ease;
+  }
+
+  /* Opaque enough to sit over the white process section without the headings
+     underneath ghosting through it. */
+  .page-nav-solid {
+    background-color: rgba(12, 12, 12, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom-color: rgba(215, 226, 234, 0.1);
+  }
+
+  /* An underline that grows from the left on the nav links. */
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* The phone-only action bar. See StickyCta.tsx for when it shows. */
+  .sticky-cta {
+    transform: translate3d(0, 130%, 0);
+    opacity: 0;
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease;
+  }
+
+  .sticky-cta-in {
+    transform: none;
+    opacity: 1;
+  }
+
+  /*
+   * The pain/fix rows. The connector between the two halves is a hairline that
+   * draws itself in as the row arrives — vertical on a phone where the halves
+   * stack, horizontal from `sm` upwards where they sit side by side.
+   */
+  .swap-line {
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+  }
+
+  .reveal-in .swap-line {
+    transform: scaleY(1);
+  }
+
+  @media (min-width: 640px) {
+    .swap-line {
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+
+    .reveal-in .swap-line {
+      transform: scaleX(1);
+    }
+  }
+
+  /* The drifting title strip on sub-pages. See TitleMarquee.tsx. */
+  .title-marquee {
+    animation: title-drift 38s linear infinite;
+    /*
+     * The floor is what matters here, not the ideal.
+     *
+     * At a 2rem minimum the strip was pinned to 32px on every phone, which
+     * made one copy of a title like "WEB DEVELOPMENT" about 350px wide — wider
+     * than the readable part of a 390px screen once the edge fades are taken
+     * off. The result was a band that never showed a whole word, only two half
+     * words with a gap between them.
+     *
+     * Dropping the floor lets 6vw actually apply below ~530px. Nothing changes
+     * from tablet up: 6vw and the 4.5rem ceiling are untouched.
+     */
+    font-size: clamp(1.35rem, 6vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(215, 226, 234, 0.28);
+    white-space: nowrap;
+  }
+
+  /*
+   * Outlined type has a floor below which it stops being letters.
+   *
+   * The strip is transparent text with a 1px stroke. At the desktop size that
+   * reads as fine outline work; at the ~26px a phone gets, a 1px stroke on
+   * both sides of a counter — the hole inside an E, a B, a P — leaves barely a
+   * pixel of gap between the two strokes, and 900 weight with negative
+   * tracking closes what is left. The word turns to mud and reads as doubled
+   * letters, which is exactly what it was reported as.
+   *
+   * The cure is to give the outline room rather than to shrink it: less weight
+   * and positive tracking open the counters back up. Same strip, same effect,
+   * legible. Nothing here applies from `sm` up, where the size already carries
+   * the detail.
+   */
+  @media (max-width: 639px) {
+    .title-marquee {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      -webkit-text-stroke-width: 0.9px;
+    }
+  }
+
+  @keyframes title-drift {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  /*
+   * FAQ disclosure. The answer stays in the DOM when collapsed — it is marked
+   * up as FAQPage structured data, and hiding it from a crawler while
+   * claiming it in the markup is the kind of thing that gets the markup
+   * ignored.
+   */
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .faq .faq-sign {
+    transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .faq[open] .faq-sign {
+    transform: rotate(45deg);
+  }
+
+  .faq .faq-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .faq[open] .faq-answer {
+    grid-template-rows: 1fr;
+  }
+
+  .faq .faq-answer > div {
+    overflow: hidden;
+  }
+
+  /* An accent that runs along the top edge of whichever question is open. */
+  .faq {
+    position: relative;
+  }
+
+  .faq::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, #bbccd7, rgba(187, 204, 215, 0));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .faq[open]::after {
+    transform: scaleX(1);
+  }
+
+  /*
+   * Scroll-linked motion.
+   *
+   * These are driven by `animation-timeline`, which means the browser ties
+   * them to scroll position itself and the main thread is never involved —
+   * the same reason `.reveal` above is a CSS transition rather than a
+   * JavaScript animation. Every property animated here is `transform` or
+   * `opacity` on purpose: animating a colour, a width or a height would land
+   * this work back on the main thread and undo the point.
+   *
+   * Everything lives inside @supports, including the starting states, so a
+   * browser without scroll-driven animations (Firefox, for now) shows the
+   * finished result rather than an empty line and invisible text.
+   */
+  .timeline {
+    view-timeline-name: --steps;
+  }
+
+  @supports (animation-timeline: view()) {
+    /* The line that fills in as you read down the steps. */
+    .timeline-fill {
+      transform: scaleY(0);
+      transform-origin: top center;
+      animation: timeline-fill linear both;
+      animation-timeline: --steps;
+      animation-range: cover 12% cover 72%;
+    }
+
+    @keyframes timeline-fill {
+      to {
+        transform: scaleY(1);
+      }
+    }
+
+    /*
+     * Each dot fills as the line reaches it. The range comes from the step's
+     * position in the list, set inline in ServicePage.tsx, so the dot and the
+     * line are reading the same timeline and can't drift apart.
+     */
+    .timeline-dot-fill {
+      transform: scale(0);
+      animation: timeline-dot cubic-bezier(0.34, 1.4, 0.64, 1) both;
+      animation-timeline: --steps;
+      animation-range: cover var(--dot-from) cover var(--dot-to);
+    }
+
+    @keyframes timeline-dot {
+      to {
+        transform: scale(1);
+      }
+    }
+
+    /* The step's text comes up to full strength as its dot fills. */
+    .timeline-step {
+      opacity: 0.45;
+      animation: timeline-step linear both;
+      animation-timeline: --steps;
+      animation-range: cover var(--dot-from) cover var(--dot-to);
+    }
+
+    @keyframes timeline-step {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Slow drift for background decoration — orbs, the ghosted page number. */
+    .parallax {
+      animation: parallax-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    @keyframes parallax-drift {
+      from {
+        transform: translate3d(0, var(--parallax-from, -40px), 0);
+      }
+      to {
+        transform: translate3d(0, var(--parallax-to, 40px), 0);
+      }
+    }
+
+    /* A screenshot settles out of a slight zoom as it scrolls into place. */
+    .settle {
+      animation: settle-in linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+
+    @keyframes settle-in {
+      from {
+        transform: scale(1.07);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+  }
+
+  /* ---------------------------------------------------------------------- *
+   * The assistant at /chat.
+   *
+   * Same rules as everything above: what moves is opacity and transform, and
+   * every animation here is small, looping and off the main thread. The one
+   * thing that runs constantly — the typing dots — is three 6px elements, so
+   * it stays cheap even on a phone that's also decoding a stream.
+   * ---------------------------------------------------------------------- */
+
+  /* The chat fills the window, so its ground is the page's ground — one soft
+     violet bloom behind the header and nothing else competing with the text. */
+  .chat-app {
+    background:
+      radial-gradient(90% 50% at 50% 0%, rgba(200, 107, 255, 0.1), transparent 62%), #0c0c0c;
+  }
+
+  .chat-scroll {
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(215, 226, 234, 0.18) transparent;
+  }
+
+  .chat-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .chat-scroll::-webkit-scrollbar-thumb {
+    background: rgba(215, 226, 234, 0.16);
+    border-radius: 999px;
+  }
+
+  .chat-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(215, 226, 234, 0.3);
+  }
+
+  /* The 1px gradient ring around the input, which warms up on focus. It's a
+     padded wrapper rather than a border-image because border-image doesn't
+     follow a border-radius the way a background does. */
+  .composer {
+    background: linear-gradient(
+      140deg,
+      rgba(215, 226, 234, 0.26),
+      rgba(215, 226, 234, 0.06) 45%,
+      rgba(200, 107, 255, 0.22)
+    );
+    transition: background 0.45s ease;
+  }
+
+  .composer:focus-within {
+    background: linear-gradient(
+      140deg,
+      rgba(200, 107, 255, 0.65),
+      rgba(215, 226, 234, 0.28) 50%,
+      rgba(255, 178, 122, 0.5)
+    );
+  }
+
+  .send-button {
+    background: linear-gradient(140deg, #ffffff, #bbccd7);
+  }
+
+  .send-button:not(:disabled):hover {
+    transform: translate3d(0, -1px, 0);
+    box-shadow: 0 12px 30px -12px rgba(215, 226, 234, 0.6);
+  }
+
+  .suggestion:hover {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  .typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: currentColor;
+    animation: typing-bounce 1.2s ease-in-out infinite;
+  }
+
+  .typing-dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes typing-bounce {
+    0%,
+    60%,
+    100% {
+      opacity: 0.3;
+      transform: translate3d(0, 0, 0);
+    }
+    30% {
+      opacity: 1;
+      transform: translate3d(0, -3px, 0);
+    }
+  }
+
+  .status-live {
+    animation: status-pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes status-pulse {
+    0%,
+    100% {
+      opacity: 0.45;
+      transform: scale(0.85);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+  }
+
+  /* The reasoning disclosure. Same grid-rows trick as the FAQ above, so the
+     panel opens without animating height. */
+  .think summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .think-caret {
+    transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .think[open] .think-caret {
+    transform: rotate(180deg);
+  }
+
+  .think-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .think[open] .think-body {
+    grid-template-rows: 1fr;
+  }
+
+  .think-body > div {
+    overflow: hidden;
+  }
+
+  .think-pulse {
+    animation: think-flicker 1.5s ease-in-out infinite;
+  }
+
+  @keyframes think-flicker {
+    0%,
+    100% {
+      opacity: 0.45;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .field {
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(215, 226, 234, 0.12);
+    background: rgba(215, 226, 234, 0.03);
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #d7e2ea;
+    transition:
+      border-color 0.25s ease,
+      background-color 0.25s ease;
+  }
+
+  .field::placeholder {
+    color: rgba(215, 226, 234, 0.3);
+  }
+
+  .field:focus {
+    outline: none;
+    border-color: rgba(200, 107, 255, 0.5);
+    background: rgba(215, 226, 234, 0.06);
+  }
+
+  /* ---------------------------------------------------------------------- *
+   * Markdown, as rendered by src/lib/markdown.ts.
+   *
+   * Scoped to `.md` so none of it leaks into the rest of the site, and written
+   * against the tags that renderer can actually emit — if you add a rule
+   * there, its styling belongs here.
+   * ---------------------------------------------------------------------- */
+
+  .md > * + * {
+    margin-top: 0.85em;
+  }
+
+  .md strong {
+    color: #eaf2f8;
+    font-weight: 600;
+  }
+
+  .md em {
+    font-style: italic;
+  }
+
+  .md a {
+    color: #d7e2ea;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(200, 107, 255, 0.55);
+    transition: text-decoration-color 0.2s ease;
+  }
+
+  .md a:hover {
+    text-decoration-color: #c86bff;
+  }
+
+  .md h3,
+  .md h4,
+  .md h5,
+  .md h6 {
+    margin-top: 1.3em;
+    color: #d7e2ea;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .md h3 {
+    font-size: 1.16em;
+  }
+
+  .md h4 {
+    font-size: 1.06em;
+  }
+
+  .md ul,
+  .md ol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    padding-left: 1.3em;
+  }
+
+  .md ul {
+    list-style: disc;
+  }
+
+  .md ol {
+    list-style: decimal;
+  }
+
+  .md li::marker {
+    color: rgba(215, 226, 234, 0.35);
+  }
+
+  .md code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.87em;
+    color: #e7cdff;
+    background: rgba(215, 226, 234, 0.08);
+    border: 1px solid rgba(215, 226, 234, 0.1);
+    border-radius: 6px;
+    padding: 0.12em 0.38em;
+  }
+
+  .md .md-pre {
+    overflow: hidden;
+    border: 1px solid rgba(215, 226, 234, 0.12);
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  .md .md-pre pre {
+    overflow-x: auto;
+    padding: 14px 16px;
+  }
+
+  .md .md-pre code {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #d7e2ea;
+    font-size: 0.85em;
+    line-height: 1.65;
+  }
+
+  .md .md-lang {
+    display: block;
+    padding: 8px 16px;
+    border-bottom: 1px solid rgba(215, 226, 234, 0.08);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(215, 226, 234, 0.4);
+  }
+
+  .md blockquote {
+    border-left: 2px solid rgba(200, 107, 255, 0.5);
+    padding-left: 14px;
+    color: rgba(215, 226, 234, 0.62);
+  }
+
+  .md hr {
+    border: none;
+    border-top: 1px solid rgba(215, 226, 234, 0.12);
+    margin: 1.2em 0;
+  }
+
+  /* The cursor that trails the reply while it's still being written. */
+  .md-streaming > *:last-child::after {
+    content: '';
+    display: inline-block;
+    width: 0.45em;
+    height: 1em;
+    margin-left: 3px;
+    vertical-align: -0.15em;
+    border-radius: 2px;
+    background: #c86bff;
+    animation: caret-blink 1s steps(2, start) infinite;
+  }
+
+  @keyframes caret-blink {
+    to {
+      opacity: 0;
+    }
+  }
+}
+
+/* Anyone who has asked their OS to calm motion down gets a still page. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /*
+   * The preloader goes entirely. Zeroing its animations would leave a static
+   * full-screen panel sitting over the page for a second and a half, which is
+   * not a calmer version of the effect — it is a broken one. Its unmount timer
+   * still runs and still cleans it out of the DOM.
+   */
+  .preloader {
+    display: none;
+  }
+
+  /* Zeroing the transition alone would leave these stuck at opacity 0. */
+  .reveal,
+  .reveal-words > span {
+    opacity: 1;
+    transform: none;
+  }
+
+  .spotlight:hover {
+    transform: none;
+  }
+
+  .title-marquee {
+    animation: none;
+  }
+
+  /* Scroll-linked motion off too, with everything left in its finished state. */
+  .timeline-fill,
+  .timeline-dot-fill {
+    animation: none;
+    transform: none;
+  }
+
+  .timeline-step {
+    animation: none;
+    opacity: 1;
+  }
+
+  .parallax,
+  .settle {
+    animation: none;
+    transform: none;
+  }
+
+  /* The chat's looping animations. The typing dots keep their opacity so the
+     wait still reads as "working", they just stop moving. */
+  .typing-dot,
+  .status-live,
+  .think-pulse {
+    animation: none;
+    opacity: 0.7;
+  }
+
+  .md-streaming > *:last-child::after {
+    animation: none;
+  }
+
+  .send-button:not(:disabled):hover,
+  .suggestion:hover {
+    transform: none;
+  }
+}

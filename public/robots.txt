@@ -1,0 +1,59 @@
+# https://aliaftab.dev/robots.txt
+
+# Search crawlers — everything is fair game, it's a one-page site.
+User-agent: *
+Allow: /
+
+# AI crawlers, listed on purpose rather than left to the wildcard.
+# Two different jobs are going on here:
+#   *-SearchBot / PerplexityBot / Google-Extended decide whether this site can
+#   be cited in an AI answer. Blocking them is how businesses quietly vanish
+#   from ChatGPT and AI Overviews.
+#   GPTBot / ClaudeBot / anthropic-ai are training crawlers — allowed here
+#   because being in the weights is free brand recall.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+Sitemap: https://aliaftab.dev/sitemap.xml
