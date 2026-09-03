@@ -33,10 +33,10 @@ const breadcrumbs = (trail: { name: string; path: string }[]) => ({
 function homeMeta(): PageMeta {
   return {
     path: '/',
-    title: `${SITE.name} — Web Developer in Lahore | AI & WhatsApp Automation`,
+    title: `${SITE.name} — Full-Stack Engineer | AI & WhatsApp Automation`,
     description:
-      'Web developer in Lahore, Pakistan. Fast websites, storefronts and mobile apps, plus ' +
-      'WhatsApp bots and AI call agents. React and Supabase. Sites from PKR 45,000.',
+      'Full-stack software engineer building fast websites, storefronts and mobile apps, plus ' +
+      'WhatsApp bots and AI call agents. React, TypeScript and Supabase.',
   };
 }
 
@@ -79,7 +79,7 @@ function reviewsMeta(): PageMeta {
 
   return {
     path,
-    title: `Client reviews — ${SITE.name}, web developer in Lahore`,
+    title: `Client reviews — ${SITE.name}, full-stack engineer`,
     description:
       `What it's like to work with ${SITE.name}: reviews from the businesses he has built ` +
       'websites, storefronts and automation for, and a form to leave your own.',
@@ -104,7 +104,7 @@ function blogMeta(): PageMeta {
 
   return {
     path,
-    title: `Writing — ${SITE.name}, web developer in Lahore`,
+    title: `Writing — ${SITE.name}, full-stack engineer`,
     description:
       'What things cost, what breaks and what is worth paying for — the questions clients ask ' +
       'about websites, apps and automation in Pakistan, answered with numbers.',
@@ -189,7 +189,7 @@ function serviceMeta(slug: string): PageMeta | null {
 
   return {
     path,
-    title: `${service.name} in Lahore, Pakistan — ${SITE.name}`,
+    title: `${service.name} — ${SITE.name}`,
     description: service.metaDescription ?? service.description,
     jsonLd: {
       '@context': 'https://schema.org',
@@ -203,8 +203,8 @@ function serviceMeta(slug: string): PageMeta | null {
           url: abs(path),
           provider: { '@id': `${SITE.url}/#person` },
           areaServed: [
-            { '@type': 'City', name: 'Lahore' },
             { '@type': 'Country', name: 'Pakistan' },
+            { '@type': 'Place', name: 'Worldwide (remote)' },
           ],
           // The starting price, machine-readable. `minPrice` rather than
           // `price` because that is what it is — quoting it as a fixed price
@@ -349,7 +349,7 @@ export function renderHead(meta: PageMeta): string {
     `<meta property="og:image" content="${image}" />`,
     '<meta property="og:image:width" content="1200" />',
     '<meta property="og:image:height" content="630" />',
-    `<meta property="og:image:alt" content="${SITE.name} — web developer, Lahore, Pakistan" />`,
+    `<meta property="og:image:alt" content="${SITE.name} — full-stack engineer" />`,
     '<meta name="twitter:card" content="summary_large_image" />',
     `<meta name="twitter:title" content="${title}" />`,
     `<meta name="twitter:description" content="${description}" />`,

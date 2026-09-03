@@ -4,17 +4,17 @@ export const PROFILE = {
   // in index.html both need the full name — a crawler that's told the page
   // belongs to "Ali Aftab" should be able to find that string on the page.
   fullName: 'Ali Aftab',
-  role: 'Web Developer',
-  location: 'Lahore, Pakistan',
+  role: 'Full-Stack Engineer',
+  location: 'Pakistan (Global)',
 
   // Built from a photo by `node scripts/make-avatar.mjs <photo>`. Point this at
   // a different file to swap it; if the file is missing the hero falls back to
   // a gradient sphere, so nothing looks broken in the meantime.
   avatar: '/me.webp',
   heroLine:
-    'a web developer in lahore building fast sites, apps and ai automation for businesses that want to be found',
+    'a full-stack engineer building fast sites, apps and ai automation for businesses worldwide',
   about:
-    "I build websites and apps for businesses in Lahore and beyond — storefronts, learning platforms and AI-powered products — and I automate the parts that eat a whole day: WhatsApp replies, missed calls, follow-ups. I care about what people actually feel: how fast it loads, how it reads on a phone, and whether Google and ChatGPT can find it at all. Let's build something that works.",
+    "I build websites and apps for businesses globally — storefronts, learning platforms and AI-powered products — and I automate the parts that eat a whole day: WhatsApp replies, missed calls, follow-ups. I care about what people actually feel: how fast it loads, how it reads on a phone, and whether Google and ChatGPT can find it at all. Let's build something that works.",
 };
 
 export const CONTACT = {
