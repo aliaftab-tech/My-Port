@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Mail, MessageCircle, MapPin, type LucideProps } from 'lucide-react';
 import FadeIn from '../components/FadeIn';
 import { CONTACT, PROFILE } from '../data/profile';
@@ -30,6 +31,75 @@ const socials = [
   { key: 'github', label: 'GitHub', icon: GithubIcon, href: CONTACT.github },
   { key: 'linkedin', label: 'LinkedIn', icon: LinkedinIcon, href: CONTACT.linkedin },
 ].filter((s) => s.href);
+
+/* ─── LinkedIn hover card ─────────────────────────────────────── */
+function LinkedInHoverIcon({ href }: { href: string }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <li className="relative">
+      {/* Popup card — appears above the icon on hover */}
+      <div
+        aria-hidden={!hovered}
+        className={`pointer-events-none absolute bottom-[calc(100%+14px)] left-1/2
+          w-56 -translate-x-1/2 rounded-2xl border border-[#D7E2EA]/10
+          bg-[#0C0C0C]/90 px-4 py-3.5 backdrop-blur-md
+          transition-all duration-300
+          ${hovered ? 'pointer-events-auto translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+      >
+        {/* small arrow pointing down */}
+        <div className="absolute -bottom-[7px] left-1/2 h-3 w-3 -translate-x-1/2 rotate-45
+          border-b border-r border-[#D7E2EA]/10 bg-[#0C0C0C]/90" />
+
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3"
+          tabIndex={hovered ? 0 : -1}
+        >
+          {/* Avatar initials */}
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full
+            border border-[#0A66C2]/40 bg-[#0A66C2]/10 text-sm font-semibold text-[#D7E2EA]">
+            AA
+          </div>
+
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-[#D7E2EA]">{PROFILE.fullName}</p>
+            <p className="mt-0.5 truncate text-[10px] font-light text-[#D7E2EA]/50">
+              {PROFILE.role}
+            </p>
+            <span className="mt-1.5 inline-flex items-center gap-1 rounded-full
+              bg-[#0A66C2]/20 px-2 py-0.5 text-[10px] font-medium text-[#4B9BFF]">
+              <LinkedinIcon size={10} />
+              View Profile
+            </span>
+          </div>
+        </a>
+      </div>
+
+      {/* The icon button itself */}
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="LinkedIn"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onFocus={() => setHovered(true)}
+        onBlur={() => setHovered(false)}
+        className={`flex h-12 w-12 items-center justify-center rounded-full border-2
+          transition-all duration-300
+          ${hovered
+            ? 'border-[#0A66C2] bg-[#0A66C2]/15 text-[#4B9BFF]'
+            : 'border-[#D7E2EA] text-[#D7E2EA] hover:bg-[#D7E2EA]/10'
+          }`}
+      >
+        <LinkedinIcon size={20} />
+      </a>
+    </li>
+  );
+}
 
 export default function ContactSection() {
   return (
@@ -81,20 +151,26 @@ export default function ContactSection() {
       {socials.length > 0 && (
         <FadeIn delay={0.4} y={20}>
           <ul className="flex items-center gap-4">
-            {socials.map(({ key, label, icon: Icon, href }) => (
-              <li key={key}>
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="flex h-12 w-12 items-center justify-center rounded-full border-2
-                    border-[#D7E2EA] text-[#D7E2EA] transition-colors duration-200 hover:bg-[#D7E2EA]/10"
-                >
-                  <Icon size={20} strokeWidth={2} aria-hidden="true" />
-                </a>
-              </li>
-            ))}
+            {socials.map(({ key, label, icon: Icon, href }) => {
+              // LinkedIn gets the special hover-card treatment
+              if (key === 'linkedin' && CONTACT.linkedin) {
+                return <LinkedInHoverIcon key={key} href={href} />;
+              }
+              return (
+                <li key={key}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="flex h-12 w-12 items-center justify-center rounded-full border-2
+                      border-[#D7E2EA] text-[#D7E2EA] transition-colors duration-200 hover:bg-[#D7E2EA]/10"
+                  >
+                    <Icon size={20} strokeWidth={2} aria-hidden="true" />
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </FadeIn>
       )}
@@ -108,3 +184,4 @@ export default function ContactSection() {
     </section>
   );
 }
+
