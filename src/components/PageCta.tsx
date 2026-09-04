@@ -1,6 +1,7 @@
-import { Mail } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 import FadeIn from './FadeIn';
-import { CONTACT } from '../data/profile';
+import { CONTACT, PROFILE } from '../data/profile';
+import { SocialLinksList } from './SocialLinks';
 
 /**
  * The close on every sub-page. One line, one address — the same ask the home
@@ -36,8 +37,8 @@ export default function PageCta({ line }: { line: string }) {
             // action of every sub-page. Padded for the thumb, pulled back so
             // the block sits where it did.
             className="hero-heading -my-1.5 inline-flex items-center gap-3 break-all py-1.5
-              font-black leading-none tracking-tight transition-opacity duration-200
-              hover:opacity-70"
+              font-black leading-none tracking-tight transition-all duration-300
+              hover:text-[#C86BFF] hover:opacity-100"
             style={{ fontSize: 'clamp(1.1rem, 4vw, 2.5rem)' }}
           >
             <Mail
@@ -48,6 +49,17 @@ export default function PageCta({ line }: { line: string }) {
             />
             {CONTACT.email}
           </a>
+        </FadeIn>
+
+        <FadeIn delay={0.3} y={20}>
+          <SocialLinksList />
+        </FadeIn>
+
+        <FadeIn delay={0.4} y={20}>
+          <p className="flex items-center gap-2 text-xs font-light uppercase tracking-widest text-[#D7E2EA] opacity-50 sm:text-sm">
+            <MapPin size={16} strokeWidth={2} aria-hidden="true" />
+            {PROFILE.location}
+          </p>
         </FadeIn>
       </div>
     </section>
