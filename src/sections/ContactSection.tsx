@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Mail, MessageCircle, MapPin, type LucideProps } from 'lucide-react';
 import FadeIn from '../components/FadeIn';
 import { CONTACT, PROFILE } from '../data/profile';
+import SpotlightCard from '../components/SpotlightCard';
 
 // Lucide dropped brand marks in v1, so these two are inlined. Same call
 // signature as a Lucide icon so they drop into the list below unchanged.
@@ -39,10 +40,9 @@ function LinkedInHoverIcon({ href }: { href: string }) {
   return (
     <li className="relative">
       {/* Popup card — appears above the icon on hover */}
-      <div
-        aria-hidden={!hovered}
+      <SpotlightCard
         className={`pointer-events-none absolute bottom-[calc(100%+14px)] left-1/2
-          w-56 -translate-x-1/2 rounded-2xl border border-[#D7E2EA]/10
+          w-56 -translate-x-1/2 rounded-2xl
           bg-[#0C0C0C]/90 px-4 py-3.5 backdrop-blur-md
           transition-all duration-300
           ${hovered ? 'pointer-events-auto translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
@@ -60,7 +60,7 @@ function LinkedInHoverIcon({ href }: { href: string }) {
         >
           {/* Avatar initials */}
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full
-            border border-[#0A66C2]/40 bg-[#0A66C2]/10 text-sm font-semibold text-[#D7E2EA]">
+            border border-[#C86BFF]/40 bg-[#C86BFF]/10 text-sm font-semibold text-[#D7E2EA]">
             AA
           </div>
 
@@ -70,13 +70,13 @@ function LinkedInHoverIcon({ href }: { href: string }) {
               {PROFILE.role}
             </p>
             <span className="mt-1.5 inline-flex items-center gap-1 rounded-full
-              bg-[#0A66C2]/20 px-2 py-0.5 text-[10px] font-medium text-[#4B9BFF]">
+              bg-[#C86BFF]/20 px-2 py-0.5 text-[10px] font-medium text-[#C86BFF]">
               <LinkedinIcon size={10} />
               View Profile
             </span>
           </div>
         </a>
-      </div>
+      </SpotlightCard>
 
       {/* The icon button itself */}
       <a
@@ -91,7 +91,7 @@ function LinkedInHoverIcon({ href }: { href: string }) {
         className={`flex h-12 w-12 items-center justify-center rounded-full border-2
           transition-all duration-300
           ${hovered
-            ? 'border-[#0A66C2] bg-[#0A66C2]/15 text-[#4B9BFF]'
+            ? 'border-[#C86BFF] bg-[#C86BFF]/15 text-[#C86BFF]'
             : 'border-[#D7E2EA] text-[#D7E2EA] hover:bg-[#D7E2EA]/10'
           }`}
       >
