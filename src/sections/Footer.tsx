@@ -19,7 +19,7 @@ export default function Footer() {
               <a
                 href={link.href}
                 className="-my-1.5 inline-block py-1.5 text-xs font-light uppercase tracking-widest
-                  text-[#D7E2EA] opacity-50 transition-opacity duration-200 hover:opacity-100"
+                  text-[#D7E2EA] opacity-50 transition-all duration-300 hover:opacity-100 hover:text-[#C86BFF]"
               >
                 {link.label}
               </a>

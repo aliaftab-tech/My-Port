@@ -51,7 +51,7 @@ export default function PageNav() {
       <Link
         to="/"
         className="group inline-flex items-center gap-2.5 text-sm font-medium uppercase
-          tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70
+          tracking-wider text-[#D7E2EA] transition-all duration-300 hover:text-[#C86BFF]
           md:text-base"
       >
         <Logo
@@ -69,7 +69,7 @@ export default function PageNav() {
             <a
               href={link.href}
               className="nav-link text-xs font-medium uppercase tracking-wider text-[#D7E2EA]
-                opacity-70 transition-opacity duration-200 hover:opacity-100 sm:text-sm md:text-base"
+                opacity-70 transition-all duration-300 hover:opacity-100 hover:text-[#C86BFF] sm:text-sm md:text-base"
             >
               {link.label}
             </a>

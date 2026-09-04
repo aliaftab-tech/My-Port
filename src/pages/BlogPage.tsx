@@ -60,7 +60,7 @@ export default function BlogPage() {
               <Link
                 to={`/blog/${post.slug}`}
                 className="group flex flex-col gap-4 border-t border-[#D7E2EA]/15 py-8
-                  transition-colors duration-200 hover:border-[#D7E2EA]/45
+                  transition-all duration-300 hover:border-[#C86BFF]
                   sm:flex-row sm:items-start sm:gap-10 sm:py-10"
               >
                 <span
@@ -76,7 +76,7 @@ export default function BlogPage() {
                 <span className="flex min-w-0 flex-1 flex-col gap-3">
                   <span
                     className="font-black uppercase leading-[1.05] tracking-tight text-[#D7E2EA]
-                      opacity-90 transition-opacity duration-200 group-hover:opacity-100"
+                      opacity-90 transition-all duration-300 group-hover:opacity-100 group-hover:text-[#C86BFF]"
                     style={{ fontSize: 'clamp(1.35rem, 3.4vw, 2.4rem)' }}
                   >
                     {post.title}
@@ -93,8 +93,8 @@ export default function BlogPage() {
                   size={26}
                   strokeWidth={2}
                   aria-hidden="true"
-                  className="hidden shrink-0 text-[#D7E2EA] opacity-40 transition-opacity
-                    duration-200 group-hover:opacity-100 sm:block sm:mt-2"
+                  className="hidden shrink-0 text-[#D7E2EA] opacity-40 transition-all
+                    duration-300 group-hover:opacity-100 group-hover:text-[#C86BFF] sm:block sm:mt-2"
                 />
               </Link>
             </FadeIn>

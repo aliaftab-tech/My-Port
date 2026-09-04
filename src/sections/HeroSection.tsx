@@ -21,7 +21,7 @@ export default function HeroSection() {
               <a
                 href={link.href}
                 className="-my-1 inline-block py-1 text-sm font-medium uppercase tracking-wider
-                  text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70 md:text-lg
+                  text-[#D7E2EA] transition-all duration-300 hover:opacity-100 hover:text-[#C86BFF] md:text-lg
                   lg:text-[1.4rem]"
               >
                 {link.label}

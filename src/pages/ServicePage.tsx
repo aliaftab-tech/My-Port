@@ -119,8 +119,8 @@ export default function ServicePage() {
                 href="/#projects"
                 className="inline-flex items-center justify-center gap-2 rounded-full border
                   border-[#D7E2EA]/25 px-8 py-4 text-xs font-medium uppercase tracking-widest
-                  text-[#D7E2EA] transition-colors duration-200 hover:border-[#D7E2EA]
-                  hover:bg-[#D7E2EA]/5 sm:text-sm"
+                  text-[#D7E2EA] transition-all duration-300 hover:border-[#C86BFF]
+                  hover:bg-[#C86BFF]/5 hover:text-[#C86BFF] sm:text-sm"
               >
                 See the work
               </a>

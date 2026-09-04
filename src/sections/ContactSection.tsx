@@ -134,8 +134,8 @@ export default function ContactSection() {
           // important link on the site. Padded and pulled back so it sits where
           // it did.
           className="hero-heading -my-1.5 inline-flex items-center gap-3 break-all py-1.5
-            font-black leading-none tracking-tight transition-opacity duration-200
-            hover:opacity-70"
+            font-black leading-none tracking-tight transition-all duration-300
+            hover:text-[#C86BFF] hover:opacity-100"
           style={{ fontSize: 'clamp(1.25rem, 5vw, 3.5rem)' }}
         >
           <Mail
@@ -164,7 +164,8 @@ export default function ContactSection() {
                     rel="noopener noreferrer"
                     aria-label={label}
                     className="flex h-12 w-12 items-center justify-center rounded-full border-2
-                      border-[#D7E2EA] text-[#D7E2EA] transition-colors duration-200 hover:bg-[#D7E2EA]/10"
+                      border-[#D7E2EA] text-[#D7E2EA] transition-all duration-300
+                      hover:border-[#C86BFF] hover:bg-[#C86BFF]/15 hover:text-[#C86BFF]"
                   >
                     <Icon size={20} strokeWidth={2} aria-hidden="true" />
                   </a>

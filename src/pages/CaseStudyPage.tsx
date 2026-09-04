@@ -85,7 +85,7 @@ export default function CaseStudyPage() {
                 rel="noopener noreferrer"
                 className="mt-8 inline-flex items-center gap-2 rounded-full border-2 border-[#D7E2EA]
                   px-6 py-3 text-sm font-medium uppercase tracking-wider text-[#D7E2EA]
-                  transition-colors duration-200 hover:bg-[#D7E2EA]/10"
+                  transition-all duration-300 hover:border-[#C86BFF] hover:bg-[#C86BFF]/15 hover:text-[#C86BFF]"
               >
                 Visit the live site
                 <ArrowUpRight size={18} strokeWidth={2} aria-hidden="true" />
@@ -248,7 +248,7 @@ export default function CaseStudyPage() {
           <Link
             to={`/work/${next.slug}`}
             className="group flex items-center justify-between gap-6 rounded-3xl border
-              border-[#D7E2EA]/20 p-6 transition-colors duration-200 hover:border-[#D7E2EA]/50 sm:p-8"
+              border-[#D7E2EA]/20 p-6 transition-all duration-300 hover:border-[#C86BFF] sm:p-8"
           >
             <span className="flex flex-col gap-2">
               <span className="text-xs font-light uppercase tracking-widest text-[#D7E2EA] opacity-50">
