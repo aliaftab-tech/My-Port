@@ -40,14 +40,18 @@ export default function ContactForm() {
     }
   };
 
-  if (status === 'success') {
     return (
-      <div className="my-4 flex flex-col items-center justify-center gap-3 rounded-2xl border border-[#C86BFF]/30 bg-[#C86BFF]/10 p-8 text-center text-[#D7E2EA]">
-        <CheckCircle className="text-[#C86BFF]" size={40} />
-        <div>
-          <h3 className="mb-1 text-lg font-medium text-white">Message sent!</h3>
-          <p className="text-sm text-[#D7E2EA]/80">
-            Thanks for reaching out. Ali will get back to you shortly at the email you provided.
+      <div className="my-4 relative overflow-hidden flex flex-col items-center justify-center gap-5 rounded-3xl border border-white/[0.06] bg-[#0A0A0B]/80 backdrop-blur-2xl p-10 sm:p-12 text-center shadow-[0_20px_40px_-20px_rgba(0,0,0,0.8)]">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px] rounded-full bg-[#C86BFF] opacity-[0.12] blur-[50px] pointer-events-none" />
+        
+        <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-[#C86BFF]/20 to-[#C86BFF]/5 border border-[#C86BFF]/30 shadow-[0_0_30px_rgba(200,107,255,0.2)]">
+          <CheckCircle className="text-[#C86BFF]" size={32} strokeWidth={1.5} />
+        </div>
+        
+        <div className="relative z-10 mt-2">
+          <h3 className="mb-2.5 text-xl tracking-wide font-light text-white">Message Sent</h3>
+          <p className="text-[15px] font-light leading-relaxed text-[#D7E2EA]/50 max-w-[280px] mx-auto">
+            Thanks for reaching out. Ali will get back to you shortly.
           </p>
         </div>
       </div>
@@ -58,10 +62,11 @@ export default function ContactForm() {
 
   if (view === 'selection') {
     return (
-      <div className="my-4 rounded-2xl border border-[#D7E2EA]/10 bg-[#101011] p-5 text-center sm:p-6">
-        <h3 className="mb-6 text-lg font-medium text-white">How would you like to connect?</h3>
+      <div className="my-4 relative overflow-hidden rounded-3xl border border-white/[0.06] bg-[#0A0A0B]/80 backdrop-blur-2xl p-8 text-center sm:p-10 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.8)]">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] h-[100px] rounded-[100%] bg-[#C86BFF] opacity-[0.05] blur-[40px] pointer-events-none" />
+        <h3 className="relative z-10 mb-8 text-lg font-light tracking-wide text-white">How would you like to connect?</h3>
         
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
+        <div className="relative z-10 flex flex-col sm:flex-row justify-center gap-5">
           <a
             href={`https://wa.me/${cleanWhatsapp}`}
             target="_blank"
@@ -93,24 +98,26 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="my-4 rounded-2xl border border-[#D7E2EA]/10 bg-[#101011] p-5 sm:p-6">
-      <div className="mb-5 flex items-center justify-between">
+    <div className="my-4 relative overflow-hidden rounded-3xl border border-white/[0.06] bg-[#0A0A0B]/80 backdrop-blur-2xl p-6 sm:p-8 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.8)]">
+      <div className="absolute top-0 right-0 w-[150px] h-[150px] rounded-full bg-[#C86BFF] opacity-[0.04] blur-[50px] pointer-events-none -translate-y-1/2 translate-x-1/4" />
+      
+      <div className="relative z-10 mb-7 flex items-start justify-between">
         <div>
-          <h3 className="mb-1 text-lg font-medium text-white">Send a message</h3>
-          <p className="text-sm text-[#D7E2EA]/70">Fill out the form below and Ali will get back to you soon.</p>
+          <h3 className="mb-1.5 text-lg font-light tracking-wide text-white">Send a message</h3>
+          <p className="text-[14px] font-light text-[#D7E2EA]/50">Fill out the form below and Ali will get back to you soon.</p>
         </div>
         <button 
           onClick={() => setView('selection')}
-          className="rounded-full p-2 text-[#D7E2EA]/60 transition-colors hover:bg-[#D7E2EA]/10 hover:text-[#D7E2EA]"
+          className="rounded-full p-2 text-[#D7E2EA]/40 transition-colors hover:bg-white/[0.06] hover:text-white"
           aria-label="Back to selection"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} strokeWidth={1.5} />
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="name" className="text-xs font-medium uppercase tracking-wider text-[#D7E2EA]/60">
+      <form onSubmit={handleSubmit} className="relative z-10 flex flex-col gap-5">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="name" className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#D7E2EA]/40 ml-1">
             Name
           </label>
           <input
@@ -119,13 +126,13 @@ export default function ContactForm() {
             name="name"
             type="text"
             disabled={status === 'submitting'}
-            className="rounded-lg border border-[#D7E2EA]/15 bg-transparent px-3 py-2.5 text-[15px] text-[#D7E2EA] placeholder:text-[#D7E2EA]/30 focus:border-[#C86BFF]/50 focus:outline-none focus:ring-1 focus:ring-[#C86BFF]/50 disabled:opacity-50"
+            className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-[15px] font-light text-white placeholder:text-[#D7E2EA]/20 focus:border-[#C86BFF]/40 focus:bg-white/[0.04] focus:outline-none focus:ring-1 focus:ring-[#C86BFF]/40 disabled:opacity-50 transition-all"
             placeholder="Jane Doe"
           />
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-[#D7E2EA]/60">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="email" className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#D7E2EA]/40 ml-1">
             Email
           </label>
           <input
@@ -134,13 +141,13 @@ export default function ContactForm() {
             name="email"
             type="email"
             disabled={status === 'submitting'}
-            className="rounded-lg border border-[#D7E2EA]/15 bg-transparent px-3 py-2.5 text-[15px] text-[#D7E2EA] placeholder:text-[#D7E2EA]/30 focus:border-[#C86BFF]/50 focus:outline-none focus:ring-1 focus:ring-[#C86BFF]/50 disabled:opacity-50"
+            className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-[15px] font-light text-white placeholder:text-[#D7E2EA]/20 focus:border-[#C86BFF]/40 focus:bg-white/[0.04] focus:outline-none focus:ring-1 focus:ring-[#C86BFF]/40 disabled:opacity-50 transition-all"
             placeholder="jane@example.com"
           />
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="message" className="text-xs font-medium uppercase tracking-wider text-[#D7E2EA]/60">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="message" className="text-[11px] font-medium uppercase tracking-[0.1em] text-[#D7E2EA]/40 ml-1">
             Message
           </label>
           <textarea
@@ -149,7 +156,7 @@ export default function ContactForm() {
             name="message"
             rows={4}
             disabled={status === 'submitting'}
-            className="resize-none rounded-lg border border-[#D7E2EA]/15 bg-transparent px-3 py-2.5 text-[15px] text-[#D7E2EA] placeholder:text-[#D7E2EA]/30 focus:border-[#C86BFF]/50 focus:outline-none focus:ring-1 focus:ring-[#C86BFF]/50 disabled:opacity-50"
+            className="resize-none rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-[15px] font-light text-white placeholder:text-[#D7E2EA]/20 focus:border-[#C86BFF]/40 focus:bg-white/[0.04] focus:outline-none focus:ring-1 focus:ring-[#C86BFF]/40 disabled:opacity-50 transition-all"
             placeholder="Hi Ali, I need a website for..."
           />
         </div>
@@ -164,14 +171,14 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={status === 'submitting'}
-          className="mt-2 flex h-11 items-center justify-center gap-2 rounded-lg bg-white font-medium text-black transition-all hover:bg-[#D7E2EA] disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-3 flex h-[46px] items-center justify-center gap-2 rounded-xl bg-white font-medium text-black transition-all hover:bg-[#D7E2EA] hover:scale-[1.02] disabled:hover:scale-100 disabled:cursor-not-allowed disabled:opacity-70 shadow-[0_0_15px_rgba(255,255,255,0.15)]"
         >
           {status === 'submitting' ? (
             <>
-              <Loader2 size={18} className="animate-spin" /> Sending...
+              <Loader2 size={18} className="animate-spin text-[#C86BFF]" /> <span className="font-light">Sending...</span>
             </>
           ) : (
-            'Send Message'
+            <span className="font-medium tracking-wide">Send Message</span>
           )}
         </button>
       </form>
