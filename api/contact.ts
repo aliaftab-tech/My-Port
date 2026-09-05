@@ -1,4 +1,5 @@
-import { Resend } from 'resend';
+
+export const config = { runtime: 'edge' };
 
 const json = (body: unknown, status: number = 200) =>
   new Response(JSON.stringify(body), {
@@ -6,7 +7,7 @@ const json = (body: unknown, status: number = 200) =>
     headers: { 'content-type': 'application/json; charset=utf-8' },
   });
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 function clientIp(request: Request): string {
   return (
@@ -55,22 +56,30 @@ export default async function handler(request: Request): Promise<Response> {
       return json({ error: 'Name, email, and message are required.' }, 400);
     }
 
-    const { error } = await resend.emails.send({
-      from: 'Portfolio Contact <onboarding@resend.dev>', // Use onboarding email for free tier, or configure a verified domain
-      to: ['hello@aliaftab.dev'],
-      subject: `New Contact Form Submission from ${name}`,
-      replyTo: email,
-      html: `
-        <h2>New Contact Request</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p style="white-space: pre-wrap;">${message}</p>
-      `,
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: 'Portfolio Contact <onboarding@resend.dev>', // Use onboarding email for free tier, or configure a verified domain
+        to: ['hello@aliaftab.dev'],
+        subject: `New Contact Form Submission from ${name}`,
+        reply_to: email,
+        html: `
+          <h2>New Contact Request</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Message:</strong></p>
+          <p style="white-space: pre-wrap;">${message}</p>
+        `,
+      }),
     });
 
-    if (error) {
-      console.error('Resend error:', error);
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      console.error('Resend error:', errorData);
       return json({ error: 'Failed to send email. Please try again later.' }, 500);
     }
 
