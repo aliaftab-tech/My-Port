@@ -25,9 +25,9 @@ export default function ProjectsSection() {
         y={40}
         className="hero-heading mb-16 text-center font-black uppercase leading-none tracking-tight
           sm:mb-20 md:mb-24"
-        style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
+        style={{ fontSize: 'clamp(2rem, 8vw, 100px)' }}
       >
-        Projects
+        What have I built?
       </FadeIn>
 
       <div ref={containerRef}>
@@ -187,6 +187,8 @@ function LogoPlate({ image, name }: { image?: ProjectImage; name: string }) {
           src={image.src}
           srcSet={srcSetFor(image.src)}
           sizes={SIZES.cardLogo}
+          width={400}
+          height={400}
           alt={`${name} logo`}
           loading="lazy"
           decoding="async"
@@ -224,6 +226,8 @@ function PhoneFrame({
           src={image.src}
           srcSet={srcSetFor(image.src)}
           sizes={SIZES.cardPhone}
+          width={600}
+          height={1300}
           alt={alt}
           loading="lazy"
           decoding="async"
@@ -280,6 +284,8 @@ function BrowserFrame({
           src={image.src}
           srcSet={srcSetFor(image.src)}
           sizes={SIZES.cardWide}
+          width={1200}
+          height={900}
           alt={alt}
           loading="lazy"
           decoding="async"

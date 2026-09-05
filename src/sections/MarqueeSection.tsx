@@ -122,6 +122,8 @@ function Row({
             src={tile.src}
             srcSet={srcSetFor(tile.src)}
             sizes={MARQUEE_SIZES[tile.shape]}
+            width={tile.shape === 'logo' ? 400 : 1200}
+            height={tile.shape === 'logo' ? 400 : 900}
             alt={tile.alt}
             loading="lazy"
             decoding="async"

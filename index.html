@@ -26,7 +26,7 @@
       name="robots"
       content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     />
-    <link rel="canonical" href="https://aliaftab.dev/" />
+    <link rel="canonical" href="https://www.aliaftab.dev/" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Ali Aftab" />
@@ -57,6 +57,9 @@
     <!--/seo-->
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -215,12 +218,28 @@
             }
           },
           {
+            "@type": "Organization",
+            "@id": "https://aliaftab.dev/#organization",
+            "name": "Ali Aftab",
+            "url": "https://www.aliaftab.dev/",
+            "logo": "https://www.aliaftab.dev/me.webp",
+            "sameAs": [
+              "https://github.com/aliaftab-tech",
+              "https://www.linkedin.com/in/aliaftab-dev/"
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "addressRegion": "Punjab",
+              "addressCountry": "PK"
+            }
+          },
+          {
             "@type": "WebSite",
             "@id": "https://aliaftab.dev/#website",
-            "url": "https://aliaftab.dev/",
+            "url": "https://www.aliaftab.dev/",
             "name": "Ali Aftab",
             "inLanguage": "en",
-            "publisher": { "@id": "https://aliaftab.dev/#person" }
+            "publisher": { "@id": "https://aliaftab.dev/#organization" }
           }
         ]
       }
@@ -247,7 +266,7 @@
           <a href="mailto:hello@aliaftab.dev" style="color: #bbccd7">hello@aliaftab.dev</a>.
         </p>
 
-        <h2>Services</h2>
+        <h2>What services do I offer?</h2>
         <ul>
           <li><strong>Web Development</strong> — custom React and TypeScript sites, no page builders.</li>
           <li><strong>E-Commerce</strong> — storefronts with carts, checkout, order tracking and an admin panel.</li>
@@ -260,7 +279,7 @@
           <li><strong>GEO &amp; LLM Optimisation</strong> — getting named by ChatGPT, Gemini, Perplexity and Google AI Overviews.</li>
         </ul>
 
-        <h2>Selected work</h2>
+        <h2>What have I built?</h2>
         <ul>
           <li><a href="https://athenaeumacademy.com/" style="color: #bbccd7">Athenaeum Academy</a> — online tuition platform for O Levels, A Levels, Matric and MDCAT.</li>
           <li><a href="https://www.speaklabbyshayan.com/" style="color: #bbccd7">SpeakLab</a> — English communication programme in Lahore with an AI speaking tutor and an Expo app.</li>

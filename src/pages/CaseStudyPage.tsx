@@ -103,6 +103,8 @@ export default function CaseStudyPage() {
             src={project.images.wide.src}
             srcSet={srcSetFor(project.images.wide.src)}
             sizes={SIZES.caseStudyHero}
+            width={1200}
+            height={900}
             alt={`${project.name} — the homepage`}
             className="settle w-full"
             decoding="async"
@@ -172,6 +174,8 @@ export default function CaseStudyPage() {
                       src={project.images.mid.src}
                       srcSet={srcSetFor(project.images.mid.src)}
                       sizes={SIZES.caseStudyMid}
+                      width={1200}
+                      height={900}
                       alt={`${project.name} — a section further down the page`}
                       loading="lazy"
                       decoding="async"
@@ -183,6 +187,8 @@ export default function CaseStudyPage() {
                       src={project.images.phone.src}
                       srcSet={srcSetFor(project.images.phone.src)}
                       sizes={SIZES.caseStudyPhone}
+                      width={600}
+                      height={1300}
                       alt={`${project.name} on mobile`}
                       loading="lazy"
                       decoding="async"
@@ -205,7 +211,7 @@ export default function CaseStudyPage() {
               className="mb-8 font-black uppercase leading-none tracking-tight text-[#D7E2EA] opacity-90"
               style={{ fontSize: 'clamp(1.5rem, 4vw, 3rem)' }}
             >
-              Results
+              What were the results?
             </FadeIn>
             <ul className="flex flex-col">
               {study.results.map((item) => (
