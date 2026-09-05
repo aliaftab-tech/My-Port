@@ -24,8 +24,10 @@ export type Post = {
   /** URL segment: /blog/<slug> */
   slug: string;
   title: string;
+  metaTitle?: string;
   /** One sentence. The meta description, and the opening line on the page. */
   summary: string;
+  metaDescription?: string;
   /**
    * ISO date, and it has to be the real one.
    *
@@ -52,8 +54,10 @@ export const POSTS: Post[] = [
   {
     slug: 'what-a-website-costs-in-pakistan',
     title: 'What a website actually costs in Pakistan',
+    metaTitle: 'What a Website Actually Costs in Pakistan',
     summary:
       'Real starting figures for a custom site, a storefront and an app in Pakistan, what moves each number, and why the cheapest quote is usually the most expensive one.',
+    metaDescription: 'Real starting prices for a custom site, a storefront and an app in Pakistan — what moves each number, and why the cheapest quote often costs the most.',
     published: '2026-08-14',
     minutes: 7,
     topic: 'Pricing',
@@ -126,8 +130,10 @@ export const POSTS: Post[] = [
   {
     slug: 'whatsapp-automation-that-does-not-get-you-banned',
     title: 'The WhatsApp automation that gets your number banned',
+    metaTitle: 'The WhatsApp Automation That Gets You Banned',
     summary:
       'The difference between the official WhatsApp Cloud API and the cheap tools that automate WhatsApp Web — and why the second kind fails at the worst possible moment.',
+    metaDescription: 'The real difference between the official WhatsApp Cloud API and cheap WhatsApp Web tools — and why the second kind fails at the worst possible moment.',
     published: '2026-08-14',
     minutes: 6,
     topic: 'Automation',
@@ -184,8 +190,10 @@ export const POSTS: Post[] = [
   {
     slug: 'why-chatgpt-has-never-heard-of-your-business',
     title: 'Why ChatGPT has never heard of your business',
+    metaTitle: 'Why ChatGPT Has Never Heard of Your Business',
     summary:
       'A growing share of "who should I hire in Lahore" never reaches a search page. What decides whether an AI assistant names your business — and how to check today.',
+    metaDescription: 'A growing share of "who should I hire in Lahore" never reaches a search page. What decides if an AI assistant names your business — and how to check today.',
     published: '2026-08-14',
     minutes: 6,
     topic: 'Search & AI',

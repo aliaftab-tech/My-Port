@@ -35,8 +35,7 @@ function homeMeta(): PageMeta {
     path: '/',
     title: `${SITE.name} — Full-Stack Engineer | AI & WhatsApp Automation`,
     description:
-      'Full-stack software engineer building fast websites, storefronts and mobile apps, plus ' +
-      'WhatsApp bots and AI call agents. React, TypeScript and Supabase.',
+      'Full-stack engineer in Lahore, Pakistan building fast websites, storefronts and mobile apps, plus WhatsApp bots and AI call agents. React, TypeScript, Supabase.',
   };
 }
 
@@ -45,10 +44,9 @@ function chatMeta(): PageMeta {
 
   return {
     path,
-    title: `Ask about ${SITE.name} — AI guide to his work | Nova`,
+    title: "Ask Nova — AI Guide to Ali Aftab's Work",
     description:
-      `Ask Nova anything about ${SITE.name}: his background, his projects and what he could ` +
-      'build for your business. Answers stream instantly and stay in your browser.',
+      "Ask Nova, an AI guide, about Ali Aftab's background, projects and what he could build for your business — instant answers, right in your browser.",
     jsonLd: {
       '@context': 'https://schema.org',
       '@graph': [
@@ -104,10 +102,9 @@ function blogMeta(): PageMeta {
 
   return {
     path,
-    title: `Writing — ${SITE.name}, full-stack engineer`,
+    title: 'Writing — Web Dev, SEO & AI Automation in Pakistan',
     description:
-      'What things cost, what breaks and what is worth paying for — the questions clients ask ' +
-      'about websites, apps and automation in Pakistan, answered with numbers.',
+      "Straight answers on what websites, apps and AI automation actually cost in Pakistan — what breaks, what's worth paying for, and how to avoid overpaying.",
     jsonLd: {
       '@context': 'https://schema.org',
       '@graph': [
@@ -145,8 +142,8 @@ function postMeta(slug: string): PageMeta | null {
 
   return {
     path,
-    title: `${post.title} — ${SITE.name}`,
-    description: post.summary,
+    title: post.metaTitle ?? `${post.title} — ${SITE.name}`,
+    description: post.metaDescription ?? post.summary,
     jsonLd: {
       '@context': 'https://schema.org',
       '@graph': [
@@ -189,7 +186,7 @@ function serviceMeta(slug: string): PageMeta | null {
 
   return {
     path,
-    title: `${service.name} — ${SITE.name}`,
+    title: service.metaTitle ?? `${service.name} — ${SITE.name}`,
     description: service.metaDescription ?? service.description,
     jsonLd: {
       '@context': 'https://schema.org',
@@ -257,7 +254,7 @@ function caseStudyMeta(slug: string): PageMeta | null {
 
   return {
     path,
-    title: `${project.name} — case study by ${SITE.name}`,
+    title: project.caseStudy.metaTitle ?? `${project.name} — case study by ${SITE.name}`,
     description: project.caseStudy.metaDescription ?? project.caseStudy.summary,
     jsonLd: {
       '@context': 'https://schema.org',

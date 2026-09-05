@@ -12,6 +12,7 @@ export type Service = {
   /** URL segment: /services/<slug> */
   slug: string;
   name: string;
+  metaTitle?: string;
   /**
    * Starting price in rupees — the floor, not the average.
    *
@@ -72,9 +73,11 @@ export const SERVICES: Service[] = [
     number: '01',
     slug: 'web-development',
     name: 'Web Development',
+    metaTitle: 'Custom Web Development in React & TypeScript — Ali Aftab',
     startingPkr: 45000,
     description:
       'Custom sites built with React and TypeScript — no page builders, no template bloat. Fast, typed, and yours to own outright.',
+    metaDescription: 'Custom websites built in React and TypeScript for businesses in Lahore and worldwide — no page builders, no template bloat. Fast, typed, and yours to own.',
     idealFor: ['No site yet', 'Outgrown a page builder', 'Losing people on mobile'],
     intro: [
       'Most business sites in Pakistan are a theme someone bought, filled with stock photos and left to rot. They load slowly, they break on a mid-range Android, and the person who set them up is unreachable a year later.',
@@ -150,9 +153,11 @@ export const SERVICES: Service[] = [
     number: '02',
     slug: 'ecommerce-development',
     name: 'E-Commerce',
+    metaTitle: 'E-Commerce Development on Supabase & Vercel — Ali Aftab',
     startingPkr: 95000,
     description:
       'Storefronts with real carts, checkout, order tracking and an admin panel behind them, backed by Supabase and deployed on Vercel.',
+    metaDescription: 'Custom storefronts with real carts, checkout, order tracking and an admin panel — built on Supabase, deployed on Vercel, and made for businesses in Pakistan.',
     idealFor: ['Selling through DMs', 'Platform fees biting', 'Orders tracked by hand'],
     intro: [
       'Selling through an Instagram DM works until it does not. Somewhere around thirty orders a month, you stop being a shop and start being a person copying addresses into a notebook at midnight.',
@@ -225,9 +230,11 @@ export const SERVICES: Service[] = [
     number: '03',
     slug: 'mobile-app-development',
     name: 'Mobile Apps',
+    metaTitle: 'Cross-Platform Mobile App Development — Ali Aftab',
     startingPkr: 150000,
     description:
       'Cross-platform apps with React Native and Expo — one codebase running on both iOS and Android, sharing the same backend as the web.',
+    metaDescription: 'iOS and Android apps built once in React Native and Expo, sharing the same backend as your website — one codebase, two app stores, less maintenance.',
     idealFor: ['Customers who return weekly', 'Push, camera or offline', 'Already have a web app'],
     intro: [
       'Two native apps means two codebases, two sets of bugs and two bills. For most businesses that is not a trade worth making.',
@@ -287,6 +294,7 @@ export const SERVICES: Service[] = [
     number: '04',
     slug: 'whatsapp-automation',
     name: 'WhatsApp Automation',
+    metaTitle: 'WhatsApp Automation (Official Cloud API) — Ali Aftab',
     startingPkr: 35000,
     description:
       'Bots on the official WhatsApp Cloud API — order updates, catalogue browsing, lead qualification and instant replies at 2am, handing off to a human the moment it actually matters.',
@@ -375,6 +383,7 @@ export const SERVICES: Service[] = [
     number: '05',
     slug: 'ai-call-agents',
     name: 'AI Call Agents',
+    metaTitle: 'AI Call Agents in Urdu & English — Ali Aftab',
     startingPkr: 60000,
     description:
       'Voice agents that pick up the phone and make outbound calls in Urdu or English — booking appointments, answering the same twenty questions, and logging every call where your team can see it.',
@@ -456,9 +465,11 @@ export const SERVICES: Service[] = [
     number: '06',
     slug: 'ai-integration',
     name: 'AI Integration',
+    metaTitle: 'AI Chatbot & LLM Integration for Businesses — Ali Aftab',
     startingPkr: 50000,
     description:
       'Chatbots, tutors and assistants powered by modern language models, designed into the product rather than bolted on the side.',
+    metaDescription: 'Custom AI chatbots, tutors and assistants powered by modern language models — designed into your product to automate support and drive more sales.',
     idealFor: ['Catalogues people cannot decode', 'Repetitive support load', 'An AI feature nobody clicks'],
     intro: [
       'Most "AI features" are a chat bubble in the corner that nobody clicks. The useful ones are the ones sitting where the work already happens.',
@@ -518,11 +529,12 @@ export const SERVICES: Service[] = [
     number: '07',
     slug: 'workflow-automation',
     name: 'Workflow Automation',
+    metaTitle: 'Business Workflow Automation — Ali Aftab',
     startingPkr: 25000,
     description:
       'The busywork wired together — forms into your CRM, orders into sheets, payments into invoices, alerts into the inbox your team already watches. Built once, running while you sleep.',
     metaDescription:
-      'Forms into your CRM, orders into sheets, payments into invoices — running while you sleep. One workflow live in production from PKR 25,000.',
+      'Forms into your CRM, orders into sheets, payments into invoices — automations that keep running while you sleep. One workflow live from PKR 25,000.',
     idealFor: ['Data typed in twice', 'Reports built by hand', 'Afternoons lost to copy-paste'],
     intro: [
       'Every business has someone whose afternoon is spent moving information from one place to another. Copying an order into a spreadsheet. Retyping a form into the CRM. Making an invoice from a payment that already happened.',
@@ -578,6 +590,7 @@ export const SERVICES: Service[] = [
     number: '08',
     slug: 'seo-and-performance',
     name: 'SEO & Performance',
+    metaTitle: 'Technical SEO & Core Web Vitals — Ali Aftab',
     startingPkr: 30000,
     description:
       'Prerendering, structured data and Core Web Vitals work, so the site loads quickly and actually shows up when someone searches for it.',
@@ -641,6 +654,7 @@ export const SERVICES: Service[] = [
     number: '09',
     slug: 'geo-llm-optimisation',
     name: 'GEO & LLM Optimisation',
+    metaTitle: 'GEO & LLM Optimisation — Get Named by ChatGPT — Ali Aftab',
     startingPkr: 35000,
     description:
       'Generative engine optimisation — entity markup, citable pages and clean crawlable answers, so ChatGPT, Gemini, Perplexity and Google AI Overviews name your business instead of a competitor.',

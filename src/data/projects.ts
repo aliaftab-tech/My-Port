@@ -17,6 +17,7 @@ export type ProjectImage = {
 export type CaseStudy = {
   /** One sentence, the page's opening line. */
   summary: string;
+  metaTitle?: string;
   /**
    * Meta description override, used only in `<head>`. Same reasoning as
    * `metaDescription` on a Service: Google cuts a snippet off around 160
@@ -109,6 +110,7 @@ export const PROJECTS: Project[] = [
     caseStudy: {
       summary:
         'An 8-week English communication programme in Lahore, with an AI speaking tutor students practise against between classes — web and mobile over one backend.',
+      metaTitle: 'SpeakLab — Case Study by Ali Aftab',
       role: 'Design, web build, mobile app and AI integration',
       highlights: [
         'Marketing site and application flow for the 8-week programme',
@@ -161,6 +163,8 @@ export const PROJECTS: Project[] = [
     caseStudy: {
       summary:
         'An online tuition platform for O Levels, A Levels, Matric and MDCAT students — enrolment, payments, a student community and the admin panel that runs it all.',
+      metaTitle: 'Athenaeum Academy — Case Study by Ali Aftab',
+      metaDescription: 'An online tuition platform for O/A Levels, Matric and MDCAT students — enrolment, payments, a student community and the admin panel behind it all.',
       role: 'Design and full build',
       highlights: [
         'Course catalogue across four separate exam systems',
@@ -209,6 +213,7 @@ export const PROJECTS: Project[] = [
     caseStudy: {
       summary:
         'Studio site for a WhatsApp automation brand, built without a framework — hand-written JavaScript, geometric type, and motion that stays out of the way.',
+      metaTitle: 'Noxesol — Case Study by Ali Aftab',
       role: 'Brand site, designed and built',
       highlights: [
         'No framework at all — hand-written JavaScript',
@@ -259,6 +264,7 @@ export const PROJECTS: Project[] = [
     caseStudy: {
       summary:
         'A storefront for a Lahore paper, fine-arts and stationery supplier, with every route prerendered at build time so search engines get real HTML rather than an empty shell.',
+      metaTitle: 'Nazir & Sons — Case Study by Ali Aftab',
       metaDescription:
         'A storefront for a Lahore paper, fine-arts and stationery supplier — every route prerendered so search engines get real HTML, not an empty shell.',
       role: 'Design and full build',
@@ -302,6 +308,8 @@ export const PROJECTS: Project[] = [
     caseStudy: {
       summary:
         'Haier official store in Saddar Cantt, Lahore — catalogue, cart and orders on Supabase, with an AI shopping assistant that answers spec questions in plain language.',
+      metaTitle: 'Ali Electronics — Case Study by Ali Aftab',
+      metaDescription: "Haier's official store in Saddar Cantt, Lahore — catalogue, cart and orders on Supabase, with a voice AI assistant that answers spec questions hands-free.",
       role: 'Design, build and AI integration',
       highlights: [
         'Full appliance catalogue with specifications and stock',
