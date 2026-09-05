@@ -26,10 +26,17 @@ export default function Composer({ value, onChange, onSubmit, onStop, streaming,
     const el = ref.current;
     if (!el) return;
 
-    // Collapse before measuring, or the height only ever ratchets upwards.
-    el.style.height = 'auto';
-    el.style.height = `${Math.min(el.scrollHeight, MAX_HEIGHT)}px`;
-    el.style.overflowY = el.scrollHeight > MAX_HEIGHT ? 'auto' : 'hidden';
+    const adjust = () => {
+      if (el.scrollHeight === 0) return; // Ignore when display: none
+      // Collapse before measuring, or the height only ever ratchets upwards.
+      el.style.height = 'auto';
+      el.style.height = `${Math.min(el.scrollHeight, MAX_HEIGHT)}px`;
+      el.style.overflowY = el.scrollHeight > MAX_HEIGHT ? 'auto' : 'hidden';
+    };
+
+    adjust();
+    window.addEventListener('resize', adjust);
+    return () => window.removeEventListener('resize', adjust);
   }, [value]);
 
   const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
