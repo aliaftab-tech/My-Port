@@ -4,6 +4,7 @@ import { AlertCircle, Bot, Check, Copy, RotateCcw } from 'lucide-react';
 import { renderMarkdown } from '../../lib/markdown';
 import type { ChatMessage } from '../../lib/chat';
 import ThinkingPanel from './ThinkingPanel';
+import ContactForm from './ContactForm';
 
 type MessageBubbleProps = {
   message: ChatMessage;
@@ -24,12 +25,15 @@ export default function MessageBubble({ message, streaming, onRetry }: MessageBu
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
+  const hasContactForm = message.content.includes('[CONTACT_FORM]');
+  const cleanContent = message.content.replace('[CONTACT_FORM]', '').trim();
+
   // Re-parsing the whole reply on every token is the cost of streaming
   // markdown; memoising means it happens once per rAF-batched update rather
   // than once per re-render of the page around it.
   const html = useMemo(
-    () => (message.role === 'assistant' ? renderMarkdown(message.content) : ''),
-    [message.role, message.content]
+    () => (message.role === 'assistant' ? renderMarkdown(cleanContent) : ''),
+    [message.role, cleanContent]
   );
 
   const copy = async () => {
@@ -90,22 +94,27 @@ export default function MessageBubble({ message, streaming, onRetry }: MessageBu
             <AlertCircle size={16} strokeWidth={2} aria-hidden="true" className="mt-0.5 shrink-0" />
             <span>{message.content}</span>
           </p>
-        ) : message.content ? (
-          <div
-            onClick={onBodyClick}
-            className={`md text-[15px] leading-[1.75] text-[#D7E2EA] ${streaming ? 'md-streaming' : ''}`}
-            // Safe by construction: renderMarkdown escapes every character of
-            // model output before wrapping any of it in a tag. See lib/markdown.ts.
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
+        ) : cleanContent || hasContactForm ? (
+          <>
+            {cleanContent && (
+              <div
+                onClick={onBodyClick}
+                className={`md text-[15px] leading-[1.75] text-[#D7E2EA] ${streaming ? 'md-streaming' : ''}`}
+                // Safe by construction: renderMarkdown escapes every character of
+                // model output before wrapping any of it in a tag. See lib/markdown.ts.
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            )}
+            {hasContactForm && <ContactForm />}
+          </>
         ) : (
-          // Sent, nothing back yet. Short on this model, but never so short
-          // that an empty bubble is the right thing to show.
-          <span className="flex items-center gap-2 py-2 text-[#D7E2EA]/40" aria-label="Thinking">
-            <span className="typing-dot" />
-            <span className="typing-dot" />
-            <span className="typing-dot" />
-          </span>
+          <div className="flex h-[26px] items-center">
+            <div className="flex gap-[3px]">
+              <div className="size-1 rounded-full bg-[#C86BFF] animate-[pulse_1s_ease-in-out_infinite]" />
+              <div className="size-1 rounded-full bg-[#C86BFF] animate-[pulse_1s_ease-in-out_0.2s_infinite]" />
+              <div className="size-1 rounded-full bg-[#C86BFF] animate-[pulse_1s_ease-in-out_0.4s_infinite]" />
+            </div>
+          </div>
         )}
 
         {/* Actions stay out of the way until the reply has finished arriving. */}
