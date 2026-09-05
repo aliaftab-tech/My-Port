@@ -60,9 +60,12 @@ export default function CaseStudyPage() {
             {project.name}
           </FadeIn>
 
-          <FadeIn delay={0.15} y={20}>
+          <FadeIn delay={0.15} y={20} className="mt-8">
+            <span className="mb-3 inline-block rounded-md bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-widest text-[#D7E2EA]">
+              TL;DR
+            </span>
             <p
-              className="mt-8 max-w-3xl font-light leading-relaxed text-[#D7E2EA] opacity-75"
+              className="max-w-3xl font-light leading-relaxed text-[#D7E2EA] opacity-75"
               style={{ fontSize: 'clamp(1rem, 1.9vw, 1.35rem)' }}
             >
               {study.summary}

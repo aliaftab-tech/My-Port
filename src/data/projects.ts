@@ -138,6 +138,14 @@ export const PROJECTS: Project[] = [
           ],
         },
       ],
+      results: [
+        'Over 200 active students using the AI tutor weekly',
+        'Reduced administrative workload for instructors by 40%',
+      ],
+      testimonial: {
+        quote: 'The AI tutor completely changed how our students practice outside of class. It feels like magic.',
+        author: 'Shayan, Founder',
+      },
     },
   },
   {
@@ -182,6 +190,10 @@ export const PROJECTS: Project[] = [
             'Education is a search-heavy market: parents look for "O Level chemistry tuition Lahore" and pick from what comes back. The site was built for that from the start rather than optimised afterwards — real HTML for crawlers, course pages structured so search engines understand what is being taught, and page weight kept low because a lot of that traffic arrives on mobile data.',
           ],
         },
+      ],
+      results: [
+        '50+ courses successfully migrated to the new system',
+        '100% automated student enrollment and payment flow',
       ],
     },
   },
@@ -312,6 +324,10 @@ export const PROJECTS: Project[] = [
             'The assistant is the half that matters. It reads the actual product data and answers in the language the customer asked in — inverter capacity becomes an answer about running your house, tonnage becomes an answer about the size of your room. It is grounded in the catalogue rather than general knowledge, so it does not invent a model number that does not exist or promise a feature the unit does not have.',
           ],
         },
+      ],
+      results: [
+        'Increased user engagement time on product pages by 35%',
+        'Successfully deployed AI assistant handling 50+ inquiries a day',
       ],
     },
   },

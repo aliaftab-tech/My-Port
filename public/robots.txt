@@ -56,4 +56,19 @@ Allow: /
 User-agent: meta-externalagent
 Allow: /
 
-Sitemap: https://aliaftab.dev/sitemap.xml
+User-agent: YouBot
+Allow: /
+
+User-agent: Cohere-ai
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+Sitemap: https://www.aliaftab.dev/sitemap.xml
