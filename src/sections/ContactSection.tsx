@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Mail, MapPin } from 'lucide-react';
 import FadeIn from '../components/FadeIn';
 import { CONTACT, PROFILE } from '../data/profile';

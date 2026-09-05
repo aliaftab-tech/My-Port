@@ -131,26 +131,52 @@
     animation: preloader-inner-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
   }
 
+  /* Ambient chromatic glow centered behind the name */
+  .preloader-glow-orb {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(540px, 90vw);
+    height: 150px;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(200, 107, 255, 0.32) 0%,
+      rgba(255, 178, 122, 0.2) 36%,
+      rgba(56, 189, 248, 0.14) 66%,
+      transparent 80%
+    );
+    filter: blur(52px);
+    pointer-events: none;
+    border-radius: 9999px;
+    z-index: 0;
+    opacity: 1;
+    animation: preloader-orb-shift 4.5s ease-in-out infinite alternate;
+  }
+
   .preloader-eyebrow {
-    font-size: 0.6875rem;
-    font-weight: 400;
+    position: relative;
+    z-index: 1;
+    font-size: 0.7rem;
+    font-weight: 500;
     letter-spacing: 0.42em;
     text-transform: uppercase;
-    color: #646973;
+    color: rgba(215, 226, 234, 0.65);
     /* Letter-spacing adds a trailing gap after the last character, which pushes
        a centred line off-centre by half of it. */
     text-indent: 0.42em;
-    opacity: 0;
-    animation: preloader-rise 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) 0.08s forwards;
+    opacity: 1;
   }
 
   .preloader-name {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: center;
     /* The mask each letter rises out of. */
     overflow: hidden;
     margin-top: 0.85rem;
-    font-size: clamp(2.25rem, 11vw, 5.5rem);
+    font-size: clamp(2.5rem, 11vw, 5.5rem);
     font-weight: 700;
     /* Roomier than the type wants, because the mask is this box: at 1.05 the
        line box crops the ascenders on Kanit's caps. */
@@ -163,38 +189,49 @@
     /* The space between the two names lives inside an inline-block, where it
        would otherwise be trimmed. */
     white-space: pre;
-    background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+    background: linear-gradient(
+      120deg,
+      #ffffff 0%,
+      #c86bff 18%,
+      #ff8fa3 38%,
+      #ffb27a 58%,
+      #38bdf8 78%,
+      #ffffff 100%
+    );
+    background-size: 300% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    transform: translate3d(0, 105%, 0);
-    animation: preloader-letter 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--letter-delay, 0s) forwards;
+    animation: preloader-color-shift 4s ease-in-out calc(var(--char-index, 0) * -0.22s) infinite;
   }
 
   .preloader-role {
+    position: relative;
+    z-index: 1;
     margin-top: 0.9rem;
     font-size: clamp(0.75rem, 2.6vw, 0.875rem);
     font-weight: 300;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(215, 226, 234, 0.55);
-    opacity: 0;
-    animation: preloader-rise 0.55s cubic-bezier(0.25, 0.1, 0.25, 1) 0.7s forwards;
+    color: rgba(215, 226, 234, 0.65);
+    opacity: 1;
   }
 
   .preloader-sep {
-    color: rgba(215, 226, 234, 0.28);
+    color: rgba(215, 226, 234, 0.35);
     padding: 0 0.15em;
   }
 
   .preloader-bar {
     position: relative;
+    z-index: 1;
     overflow: hidden;
-    width: min(190px, 42vw);
-    height: 1px;
+    width: min(220px, 44vw);
+    height: 2px;
     margin-top: 2rem;
-    background: rgba(215, 226, 234, 0.12);
+    border-radius: 9999px;
+    background: rgba(215, 226, 234, 0.1);
   }
 
   /*
@@ -207,10 +244,10 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(187, 204, 215, 0.15), #bbccd7);
-    transform: scaleX(0);
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #c86bff, #ffb27a, #38bdf8);
+    box-shadow: 0 0 12px rgba(200, 107, 255, 0.45);
     transform-origin: left center;
-    animation: preloader-fill 1.05s cubic-bezier(0.65, 0, 0.35, 1) 0.2s forwards;
   }
 
   @keyframes preloader-glow {
@@ -254,6 +291,33 @@
       /* 101% rather than 100% — at some zoom levels a whole-percent translate
          leaves a one-pixel seam of curtain across the top of the page. */
       transform: translate3d(0, -101%, 0);
+    }
+  }
+
+  @keyframes preloader-color-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes preloader-orb-shift {
+    0% {
+      filter: blur(52px) hue-rotate(0deg);
+      transform: translate(-50%, -50%) scale(0.96);
+    }
+    50% {
+      filter: blur(64px) hue-rotate(45deg);
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+    100% {
+      filter: blur(52px) hue-rotate(0deg);
+      transform: translate(-50%, -50%) scale(0.96);
     }
   }
 

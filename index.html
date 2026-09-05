@@ -7,32 +7,6 @@
     <meta name="google-site-verification" content="nDYmJ33vrAbz5RQnNS_aBgnKXcUeZ47iCbMm1M6sTco" />
     <meta name="msvalidate.01" content="831C9FA846B634BFA493CE2FF1E8745A" />
 
-    <!--
-      The preloader's off switch, and it has to be here rather than in React.
-
-      The curtain ships inside the prerendered HTML so that the first frame the
-      browser paints is already the curtain — anything added on mount would
-      flash the page first and then cover it. The cost of that is a curtain
-      that would otherwise replay on every reload, which is charming once and
-      tiresome by the third time.
-
-      This runs before the first paint and before the stylesheet has anything
-      to lay out, so a visitor who has already seen it this session never sees
-      a frame of it. Doing the same check inside the component would be two
-      frames too late, and doing it in the initial state would desync the
-      client's first render from the prerendered markup.
-
-      Blocking and inline is the point. Deferring it defeats it entirely.
-    -->
-    <script>
-      try {
-        if (sessionStorage.getItem('aa:preloaded') !== null) {
-          document.documentElement.dataset.preloaded = '1';
-        }
-      } catch (e) {
-        /* Storage blocked. The curtain runs; nothing breaks. */
-      }
-    </script>
 
     <!--seo-->
     <!--

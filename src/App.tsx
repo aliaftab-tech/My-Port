@@ -1,6 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import Preloader from './components/Preloader';
 import RouteHead from './components/RouteHead';
 import Footer from './sections/Footer';
 import BlogPage from './pages/BlogPage';
@@ -27,10 +26,6 @@ export default function App() {
     <main className="bg-[#0C0C0C]" style={{ overflowX: 'clip' }}>
       <RouteHead />
 
-      {/* Outside <Routes> on purpose: it belongs to the session, not the page,
-          so landing on a service page deserves the same introduction the home
-          page gets. It takes itself out of the DOM once it has run. */}
-      <Preloader />
 
       <Routes>
         <Route path="/" element={<HomePage />} />
