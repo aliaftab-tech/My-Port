@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle, AlertCircle, MessageCircle, Mail, ArrowLeft } from 'lucide-react';
+import { CONTACT } from '../../data/profile';
 
 export default function ContactForm() {
+  const [view, setView] = useState<'selection' | 'email'>('selection');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -52,11 +54,58 @@ export default function ContactForm() {
     );
   }
 
+  const cleanWhatsapp = CONTACT.whatsapp.replace(/[^0-9]/g, '');
+
+  if (view === 'selection') {
+    return (
+      <div className="my-4 rounded-2xl border border-[#D7E2EA]/10 bg-[#101011] p-5 text-center sm:p-6">
+        <h3 className="mb-6 text-lg font-medium text-white">How would you like to connect?</h3>
+        
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <a
+            href={`https://wa.me/${cleanWhatsapp}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center justify-center gap-2 rounded-full border-2 border-white px-8 py-3 text-[14px] font-bold uppercase tracking-[0.15em] text-white transition-transform hover:scale-105"
+            style={{
+              background: 'linear-gradient(to right, #056a50, #09a779)',
+              boxShadow: '0 0 20px rgba(9, 167, 121, 0.4)',
+            }}
+          >
+            <MessageCircle size={20} />
+            WhatsApp
+          </a>
+
+          <button
+            onClick={() => setView('email')}
+            className="flex items-center justify-center gap-2 rounded-full border-2 border-white px-8 py-3 text-[14px] font-bold uppercase tracking-[0.15em] text-white transition-transform hover:scale-105"
+            style={{
+              background: 'linear-gradient(to right, #6b149b, #b33979)',
+              boxShadow: '0 0 20px rgba(179, 57, 121, 0.4)',
+            }}
+          >
+            <Mail size={20} />
+            Email
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="my-4 rounded-2xl border border-[#D7E2EA]/10 bg-[#101011] p-5 sm:p-6">
-      <div className="mb-5">
-        <h3 className="mb-1 text-lg font-medium text-white">Send a message</h3>
-        <p className="text-sm text-[#D7E2EA]/70">Fill out the form below and Ali will get back to you soon.</p>
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h3 className="mb-1 text-lg font-medium text-white">Send a message</h3>
+          <p className="text-sm text-[#D7E2EA]/70">Fill out the form below and Ali will get back to you soon.</p>
+        </div>
+        <button 
+          onClick={() => setView('selection')}
+          className="rounded-full p-2 text-[#D7E2EA]/60 transition-colors hover:bg-[#D7E2EA]/10 hover:text-[#D7E2EA]"
+          aria-label="Back to selection"
+        >
+          <ArrowLeft size={20} />
+        </button>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
