@@ -219,13 +219,13 @@ export default async function handler(request: Request): Promise<Response> {
     // A deploy without the key set is the single most likely failure here, so
     // it gets its own message rather than a generic 500.
     return json(
-      { error: 'The assistant is not configured yet — NVIDIA_API_KEY is missing on the server.' },
+      { error: 'Configuration Error: The assistant requires an API key to function. Please contact the administrator.' },
       500
     );
   }
 
   if (rateLimited(clientIp(request))) {
-    return json({ error: 'Too many messages in a row. Give it a minute.' }, 429);
+    return json({ error: 'Rate limit exceeded. Please wait a moment before sending another message.' }, 429);
   }
 
   let messages: ChatMessage[];
@@ -235,7 +235,7 @@ export default async function handler(request: Request): Promise<Response> {
     messages = parseMessages(body?.messages);
     think = body?.think === true;
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : 'Malformed request body.' }, 400);
+    return json({ error: error instanceof Error ? error.message : 'Invalid request format. Please try again.' }, 400);
   }
 
   const abort = new AbortController();
@@ -276,7 +276,7 @@ export default async function handler(request: Request): Promise<Response> {
     clearTimeout(timeout);
     const aborted = error instanceof Error && error.name === 'AbortError';
     return json(
-      { error: aborted ? 'The model took too long to answer.' : 'Could not reach NVIDIA NIM.' },
+      { error: aborted ? 'The request timed out while waiting for a response.' : 'Unable to connect to the upstream AI service.' },
       aborted ? 504 : 502
     );
   }
@@ -291,8 +291,8 @@ export default async function handler(request: Request): Promise<Response> {
     return json(
       {
         error: rejected
-          ? 'NVIDIA rejected the API key.'
-          : `NVIDIA NIM returned ${upstream.status}.`,
+          ? 'Authentication failed: Invalid or expired API key.'
+          : `An upstream service error occurred (Status: ${upstream.status}).`,
         detail: detail.slice(0, 300) || undefined,
       },
       // Keep the meaningful statuses; everything else is a bad gateway as far

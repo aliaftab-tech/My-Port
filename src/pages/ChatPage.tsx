@@ -31,7 +31,7 @@ import {
 const SUGGESTIONS = [
   'What kind of work does Ali do?',
   'Can he build an online store for my business?',
-  'Ali ke saath project kaise shuru karein?',
+  'How do I start a project with Ali?',
   'Show me work like the thing I need',
 ];
 
@@ -193,7 +193,7 @@ export default function ChatPage() {
         failure =
           thrown instanceof ChatError
             ? thrown.message
-            : 'Could not reach the assistant. Check your connection and try again.';
+            : 'Unable to connect to the assistant. Please verify your internet connection and try again.';
       }
     } finally {
       if (frameRef.current !== null) {
@@ -290,6 +290,9 @@ export default function ChatPage() {
 
   const lastIndex = messages.length - 1;
   const empty = messages.length === 0;
+
+  const usedSuggestions = new Set(messages.filter((m) => m.role === 'user').map((m) => m.content));
+  const availableSuggestions = SUGGESTIONS.filter((s) => !usedSuggestions.has(s));
 
   return (
     // `100svh`, not `100vh`: on a phone, `vh` includes the space the browser's
@@ -409,28 +412,30 @@ export default function ChatPage() {
                 />
               </div>
 
-              <div className="mt-2 flex w-full max-w-3xl flex-col items-start sm:items-center">
-                <p className="mb-4 text-[10px] font-medium uppercase tracking-[0.2em] text-[#D7E2EA]/65">
-                  Try asking
-                </p>
+              {availableSuggestions.length > 0 && (
+                <div className="mt-2 flex w-full max-w-3xl flex-col items-start sm:items-center">
+                  <p className="mb-4 text-[10px] font-medium uppercase tracking-[0.2em] text-[#D7E2EA]/65">
+                    Try asking
+                  </p>
 
-                <ul className="flex flex-wrap justify-start gap-2.5 sm:justify-center">
-                  {SUGGESTIONS.map((suggestion) => (
-                    <li key={suggestion}>
-                      <button
-                        type="button"
-                        onClick={() => send(suggestion)}
-                        className="suggestion rounded-full border border-[#D7E2EA]/18 px-4 py-2.5
-                          text-[13.5px] leading-snug text-[#D7E2EA]/85 transition-all
-                          duration-300 hover:border-[#D7E2EA]/40 hover:bg-[#D7E2EA]/[0.07]
-                          hover:text-[#D7E2EA]"
-                      >
-                        {suggestion}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                  <ul className="flex flex-wrap justify-start gap-2.5 sm:justify-center">
+                    {availableSuggestions.map((suggestion) => (
+                      <li key={suggestion}>
+                        <button
+                          type="button"
+                          onClick={() => send(suggestion)}
+                          className="suggestion rounded-full border border-[#D7E2EA]/18 px-4 py-2.5
+                            text-[13.5px] leading-snug text-[#D7E2EA]/85 transition-all
+                            duration-300 hover:border-[#D7E2EA]/40 hover:bg-[#D7E2EA]/[0.07]
+                            hover:text-[#D7E2EA]"
+                        >
+                          {suggestion}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           ) : (
             // Bottom-aligned like every other chat: a two-message thread
@@ -448,10 +453,10 @@ export default function ChatPage() {
                   }
                 />
               ))}
-              {!streaming && messages[messages.length - 1]?.role === 'assistant' && (
+              {!streaming && messages[messages.length - 1]?.role === 'assistant' && availableSuggestions.length > 0 && (
                 <div className="ml-11">
                   <ul className="flex flex-wrap gap-2.5">
-                    {SUGGESTIONS.map((suggestion) => (
+                    {availableSuggestions.map((suggestion) => (
                       <li key={suggestion}>
                         <button
                           type="button"

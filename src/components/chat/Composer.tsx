@@ -62,17 +62,25 @@ export default function Composer({ value, onChange, onSubmit, onStop, streaming,
           Message the assistant
         </label>
 
-        <textarea
-          id={id}
-          ref={ref}
-          rows={1}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          onKeyDown={onKeyDown}
-          placeholder="Ask about Ali's work, services or experience…"
-          className="chat-scroll block flex-1 resize-none bg-transparent py-2.5 text-[15px]
-            leading-relaxed text-[#D7E2EA] outline-none placeholder:text-[#D7E2EA]/32"
-        />
+        {streaming ? (
+          <div className="flex-1 flex items-center h-[40px] pl-1">
+             <span className="text-[14.5px] font-medium tracking-wide bg-gradient-to-r from-[#D7E2EA]/40 via-[#D7E2EA] to-[#D7E2EA]/40 bg-[length:200%_auto] animate-shimmer bg-clip-text text-transparent">
+               Generating response...
+             </span>
+          </div>
+        ) : (
+          <textarea
+            id={id}
+            ref={ref}
+            rows={1}
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+            onKeyDown={onKeyDown}
+            placeholder="Ask about Ali's work, services or experience…"
+            className="chat-scroll block flex-1 resize-none bg-transparent py-2.5 text-[15px]
+              leading-relaxed text-[#D7E2EA] outline-none placeholder:text-[#D7E2EA]/32"
+          />
+        )}
 
         {streaming ? (
           <button

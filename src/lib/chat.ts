@@ -147,7 +147,9 @@ export async function streamChat({
       .json()
       .then((body: { error?: string }) => body?.error)
       .catch(() => undefined);
-    throw new ChatError(detail ?? `The assistant is unavailable right now (${response.status}).`);
+    throw new ChatError(
+      detail ?? `The service is temporarily unavailable (Status: ${response.status}). Please try again later.`
+    );
   }
 
   const reader = response.body.getReader();
