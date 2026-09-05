@@ -7,6 +7,7 @@ type ComposerProps = {
   onSubmit: () => void;
   onStop: () => void;
   streaming: boolean;
+  id?: string;
 };
 
 const MAX_HEIGHT = 168;
@@ -18,7 +19,7 @@ const MAX_HEIGHT = 168;
  * scrolls — a textarea that keeps growing pushes the conversation off the top
  * of the screen, which is worse than a scrollbar.
  */
-export default function Composer({ value, onChange, onSubmit, onStop, streaming }: ComposerProps) {
+export default function Composer({ value, onChange, onSubmit, onStop, streaming, id = 'chat-input' }: ComposerProps) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -50,12 +51,12 @@ export default function Composer({ value, onChange, onSubmit, onStop, streaming 
   return (
     <form onSubmit={onFormSubmit} className="composer rounded-[28px] p-[1px]">
       <div className="flex items-end gap-2 rounded-[27px] bg-[#101011]/95 py-2 pl-5 pr-2 backdrop-blur-xl">
-        <label htmlFor="chat-input" className="sr-only">
+        <label htmlFor={id} className="sr-only">
           Message the assistant
         </label>
 
         <textarea
-          id="chat-input"
+          id={id}
           ref={ref}
           rows={1}
           value={value}

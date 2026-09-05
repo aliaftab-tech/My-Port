@@ -1,6 +1,6 @@
 import { useMemo, useState, type MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertCircle, Check, Copy, RotateCcw, Sparkles } from 'lucide-react';
+import { AlertCircle, Bot, Check, Copy, RotateCcw } from 'lucide-react';
 import { renderMarkdown } from '../../lib/markdown';
 import type { ChatMessage } from '../../lib/chat';
 import ThinkingPanel from './ThinkingPanel';
@@ -75,13 +75,9 @@ export default function MessageBubble({ message, streaming, onRetry }: MessageBu
     <div className="group/msg flex gap-3">
       <div
         aria-hidden="true"
-        className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full"
-        style={{
-          background: 'radial-gradient(circle at 30% 26%, #C86BFF 0%, #7621B0 55%, #2A0A3C 100%)',
-          boxShadow: '0 0 24px rgba(118,33,176,0.45)',
-        }}
+        className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-full border border-[#D7E2EA]/15"
       >
-        <Sparkles size={14} strokeWidth={2.2} className="text-white/90" />
+        <Bot size={16} strokeWidth={2.2} color="#C86BFF" />
       </div>
 
       <div className="min-w-0 flex-1">

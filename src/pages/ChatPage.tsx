@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertCircle, Brain, Menu, RotateCcw, Sparkles, X } from 'lucide-react';
+import { AlertCircle, ArrowDown, Brain, Menu, RotateCcw, X } from 'lucide-react';
 import Logo from '../components/Logo';
 import ChatSidebar from '../components/chat/ChatSidebar';
 import Composer from '../components/chat/Composer';
@@ -15,7 +15,6 @@ import {
   type ChatMessage,
 } from '../lib/chat';
 import {
-  GREETING,
   emptyConversation,
   loadConversations,
   loadThinking,
@@ -393,38 +392,36 @@ export default function ChatPage() {
       >
         <div className="mx-auto flex min-h-full max-w-3xl flex-col py-6">
           {empty ? (
-            // Pushed to the bottom, so the greeting and the openers sit right
-            // above the input rather than floating in the middle of a big screen.
-            <div className="mt-auto flex flex-col items-start gap-5">
-              <div
-                aria-hidden="true"
-                className="grid size-9 place-items-center rounded-xl"
-                style={{
-                  background:
-                    'radial-gradient(circle at 30% 26%, #C86BFF 0%, #7621B0 55%, #2A0A3C 100%)',
-                  boxShadow: '0 0 30px rgba(118,33,176,0.45)',
-                }}
-              >
-                <Sparkles size={16} strokeWidth={2.2} className="text-white/90" />
+            // Centered layout for empty state on desktop, bottom-aligned left-aligned on mobile
+            <div className="mb-4 mt-auto flex w-full flex-col items-start justify-center gap-8 py-4 text-left sm:m-auto sm:items-center sm:text-center sm:py-10">
+              <h1 className="text-[2.75rem] font-serif tracking-tight text-white sm:text-6xl lg:text-[4.5rem]">
+                Ask about <span className="bg-gradient-to-r from-[#C86BFF] via-[#7621B0] to-[#2A0A3C] bg-clip-text font-serif italic text-transparent">Ali.</span>
+              </h1>
+
+              <div className="hidden w-full max-w-2xl text-left sm:block">
+                <Composer
+                  id="desktop-composer"
+                  value={draft}
+                  onChange={setDraft}
+                  onSubmit={() => send(draft)}
+                  onStop={() => abortRef.current?.abort()}
+                  streaming={streaming}
+                />
               </div>
 
-              <p className="max-w-[34rem] text-[17px] leading-relaxed text-[#D7E2EA]/90 sm:text-[19px]">
-                {GREETING}
-              </p>
-
-              <div className="mt-2 w-full">
-                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#D7E2EA]/32">
+              <div className="mt-2 flex w-full max-w-3xl flex-col items-start sm:items-center">
+                <p className="mb-4 text-[10px] font-medium uppercase tracking-[0.2em] text-[#D7E2EA]/65">
                   Try asking
                 </p>
 
-                <ul className="mt-3 flex flex-wrap gap-2.5">
+                <ul className="flex flex-wrap justify-start gap-2.5 sm:justify-center">
                   {SUGGESTIONS.map((suggestion) => (
                     <li key={suggestion}>
                       <button
                         type="button"
                         onClick={() => send(suggestion)}
                         className="suggestion rounded-full border border-[#D7E2EA]/18 px-4 py-2.5
-                          text-left text-[13.5px] leading-snug text-[#D7E2EA]/85 transition-all
+                          text-[13.5px] leading-snug text-[#D7E2EA]/85 transition-all
                           duration-300 hover:border-[#D7E2EA]/40 hover:bg-[#D7E2EA]/[0.07]
                           hover:text-[#D7E2EA]"
                       >
@@ -451,12 +448,43 @@ export default function ChatPage() {
                   }
                 />
               ))}
+              {!streaming && messages[messages.length - 1]?.role === 'assistant' && (
+                <div className="ml-11">
+                  <ul className="flex flex-wrap gap-2.5">
+                    {SUGGESTIONS.map((suggestion) => (
+                      <li key={suggestion}>
+                        <button
+                          type="button"
+                          onClick={() => send(suggestion)}
+                          className="suggestion rounded-full border border-[#D7E2EA]/18 px-4 py-2.5
+                            text-[13.5px] leading-snug text-[#D7E2EA]/85 transition-all
+                            duration-300 hover:border-[#D7E2EA]/40 hover:bg-[#D7E2EA]/[0.07]
+                            hover:text-[#D7E2EA]"
+                        >
+                          {suggestion}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
 
-      <div className="shrink-0 px-4 pb-4 pt-3 sm:px-6">
+      <div className="shrink-0 px-4 pb-4 pt-3 sm:px-6 relative">
+        {!empty && !pinned && (
+          <div className="absolute -top-12 left-0 right-0 flex justify-center">
+            <button
+              onClick={() => scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })}
+              className="grid size-8 place-items-center rounded-full border border-[#D7E2EA]/14 bg-[#101011]/95 text-[#D7E2EA]/60 shadow-lg backdrop-blur-md transition-all hover:bg-[#D7E2EA]/10 hover:text-[#D7E2EA]"
+              aria-label="Scroll to bottom"
+            >
+              <ArrowDown size={15} strokeWidth={2} />
+            </button>
+          </div>
+        )}
         <div className="mx-auto max-w-3xl">
           {error ? (
             <div className="mb-2 flex items-start gap-2 rounded-2xl border border-[#FFB27A]/25 bg-[#BE4C00]/10 px-3.5 py-2.5 text-[13px] text-[#FFC9A3]">
@@ -468,18 +496,16 @@ export default function ChatPage() {
             </div>
           ) : null}
 
-          <Composer
-            value={draft}
-            onChange={setDraft}
-            onSubmit={() => send(draft)}
-            onStop={() => abortRef.current?.abort()}
-            streaming={streaming}
-          />
-
-          <p className="mt-2.5 text-center text-[11px] text-[#D7E2EA]/28">
-            Nova can be wrong about prices and timelines — check with {PROFILE.firstName} before you
-            count on it.
-          </p>
+          <div className={empty ? 'block sm:hidden' : 'block'}>
+            <Composer
+              id="mobile-composer"
+              value={draft}
+              onChange={setDraft}
+              onSubmit={() => send(draft)}
+              onStop={() => abortRef.current?.abort()}
+              streaming={streaming}
+            />
+          </div>
         </div>
       </div>
 
