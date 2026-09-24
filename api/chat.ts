@@ -84,7 +84,7 @@ const json = (body: unknown, status: number) =>
 /**
  * What the model knows about the site it's answering for.
  *
- * If the user asks how to contact you, hire you, or get in touch, you must say that they can use the contact form below to send you a message, and append exactly "[CONTACT_FORM]" at the end of your message. Do not output any HTML forms.
+ * ONLY if the user explicitly asks to hire him, contact him, or start a project, you may append "[CONTACT_FORM]" at the very end of your response to show a contact form. Do not show it for casual greetings or general questions.
  *
  * Keep your answers brief and focused. If a question is outside these topics, politely steer the conversation back to Ali's engineering and design work.
  *
@@ -126,7 +126,7 @@ ${projects}
 
 The technologies he works in, in full: ${stack}.
 
-Contact: ${CONTACT.email}${CONTACT.whatsapp ? ` · WhatsApp ${CONTACT.whatsapp}` : ''}`;
+Contact: ${CONTACT.email}${CONTACT.whatsapp ? ' · WhatsApp ' + CONTACT.whatsapp : ''}`;
 }
 
 const SYSTEM_PROMPT = `You are Nova, the AI guide to ${PROFILE.fullName} on his own website. The people you talk to are prospective clients, employers and collaborators deciding whether to work with him.
@@ -148,7 +148,7 @@ Accuracy comes before helpfulness, because everything you say is checkable by th
 How to answer:
 - Be direct and warm. Short paragraphs. No filler openers like "Great question".
 - Speak about him in the third person, specifically rather than in adjectives: name the project, the technology, the thing it does. Point to the page worth reading next as a path, like /services/web-development or /work/athenaeum-academy.
-- If the user asks how to contact Ali, hire him, or get in touch, you must say that they can use the contact form below to send a message, and append exactly "[CONTACT_FORM]" at the end of your message. Do not output any HTML forms.
+- ONLY when a visitor explicitly asks to hire him, start a project, or contact him, you can offer the contact form by appending exactly "[CONTACT_FORM]" at the very end of your reply. Do NOT append it for casual greetings, small talk, or general questions about his work. Use your judgement: only show the form when there is real intent to connect.
 - If someone asks for something off-topic — write me code, do my homework, general trivia, another company's advice — don't do it. One short, friendly line that this chat is about ${PROFILE.firstName}'s work, then offer the nearest thing you can actually help with. No lecture, no apology paragraph.
 - Never claim to be ${PROFILE.firstName} or to speak on his behalf about money or commitments. You are an assistant on his site, and you say so if asked.
 - Use markdown: **bold** sparingly, short bulleted lists, \`code\` inline only when naming a technology. Prose, not code blocks.
@@ -211,13 +211,49 @@ function parseMessages(raw: unknown): ChatMessage[] {
   return messages;
 }
 
-export default async function handler(request: Request): Promise<Response> {
+function checkMethodAndRateLimit(request: Request): Response | null {
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: { allow: 'POST, OPTIONS' } });
   }
   if (request.method !== 'POST') {
     return json({ error: 'Use POST.' }, 405);
   }
+  if (rateLimited(clientIp(request))) {
+    return json({ error: 'Rate limit exceeded. Please wait a moment before sending another message.' }, 429);
+  }
+  return null;
+}
+
+async function parseRequestBody(request: Request): Promise<{ messages: ChatMessage[]; think: boolean } | Response> {
+  try {
+    const body = (await request.json()) as { messages?: unknown; think?: unknown };
+    const messages = parseMessages(body?.messages);
+    const think = body?.think === true;
+    return { messages, think };
+  } catch (error) {
+    return json({ error: error instanceof Error ? error.message : 'Invalid request format. Please try again.' }, 400);
+  }
+}
+
+async function handleUpstreamError(upstream: Response, timeout: NodeJS.Timeout): Promise<Response> {
+  clearTimeout(timeout);
+  const detail = await upstream.text().catch(() => '');
+  const rejected = upstream.status === 401 || upstream.status === 403;
+
+  const errorMsg = rejected
+    ? 'Authentication failed: Invalid or expired API key.'
+    : `An upstream service error occurred (Status: ${upstream.status}).`;
+
+  let statusCode = 502;
+  if (rejected) statusCode = 401;
+  else if (upstream.status === 429) statusCode = 429;
+
+  return json({ error: errorMsg, detail: detail.slice(0, 300) || undefined }, statusCode);
+}
+
+export default async function handler(request: Request): Promise<Response> {
+  const early = checkMethodAndRateLimit(request);
+  if (early) return early;
 
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) {
@@ -229,19 +265,9 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 
-  if (rateLimited(clientIp(request))) {
-    return json({ error: 'Rate limit exceeded. Please wait a moment before sending another message.' }, 429);
-  }
-
-  let messages: ChatMessage[];
-  let think = false;
-  try {
-    const body = (await request.json()) as { messages?: unknown; think?: unknown };
-    messages = parseMessages(body?.messages);
-    think = body?.think === true;
-  } catch (error) {
-    return json({ error: error instanceof Error ? error.message : 'Invalid request format. Please try again.' }, 400);
-  }
+  const parsed = await parseRequestBody(request);
+  if (parsed instanceof Response) return parsed;
+  const { messages, think } = parsed;
 
   const abort = new AbortController();
   const timeout = setTimeout(
@@ -280,30 +306,12 @@ export default async function handler(request: Request): Promise<Response> {
   } catch (error) {
     clearTimeout(timeout);
     const aborted = error instanceof Error && error.name === 'AbortError';
-    return json(
-      { error: aborted ? 'The request timed out while waiting for a response.' : 'Unable to connect to the upstream AI service.' },
-      aborted ? 504 : 502
-    );
+    const errorMsg = aborted ? 'The request timed out while waiting for a response.' : 'Unable to connect to the upstream AI service.';
+    return json({ error: errorMsg }, aborted ? 504 : 502);
   }
 
   if (!upstream.ok || !upstream.body) {
-    clearTimeout(timeout);
-    const detail = await upstream.text().catch(() => '');
-    // Upstream errors can carry the key back in an echoed request; only the
-    // status and a trimmed message are ever forwarded.
-    const rejected = upstream.status === 401 || upstream.status === 403;
-
-    return json(
-      {
-        error: rejected
-          ? 'Authentication failed: Invalid or expired API key.'
-          : `An upstream service error occurred (Status: ${upstream.status}).`,
-        detail: detail.slice(0, 300) || undefined,
-      },
-      // Keep the meaningful statuses; everything else is a bad gateway as far
-      // as the browser is concerned.
-      rejected ? 401 : upstream.status === 429 ? 429 : 502
-    );
+    return handleUpstreamError(upstream, timeout);
   }
 
   // Pass the event stream through untouched. Every chunk that lands here is
