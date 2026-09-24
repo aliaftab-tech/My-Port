@@ -6,7 +6,7 @@ import { PROFILE, CONTACT } from '../data/profile';
 export const SITE = {
   url: 'https://www.aliaftab.dev',
   name: PROFILE.fullName,
-  ogImage: '/og-image.png',
+  ogImage: '/me.webp',
 } as const;
 
 export type PageMeta = {
