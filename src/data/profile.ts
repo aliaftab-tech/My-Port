@@ -20,9 +20,9 @@ export const PROFILE = {
 export const CONTACT = {
   email: 'hello@aliaftab.dev',
 
-  // TODO(Ali): fill these in and they'll appear automatically in the contact
+  // Fill these in and they'll appear automatically in the contact
   // section and footer. Leave a value as an empty string to hide that link.
-  whatsapp: '+92 320 4621535',
+  whatsapp: '+92 329 4862198',
   github: 'https://github.com/aliaftab-tech',
   linkedin: 'https://www.linkedin.com/in/aliaftab-dev/',
 };

@@ -7,7 +7,7 @@ export default function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('submitting');
     setErrorMsg('');
@@ -35,6 +35,7 @@ export default function ContactForm() {
         setErrorMsg(result.error || 'Failed to send message.');
       }
     } catch (err) {
+      console.error('Contact form submission failed:', err);
       setStatus('error');
       setErrorMsg('Network error. Please try again later.');
     }
@@ -64,7 +65,7 @@ export default function ContactForm() {
     );
   }
 
-  const cleanWhatsapp = CONTACT.whatsapp.replace(/[^0-9]/g, '');
+  const cleanWhatsapp = CONTACT.whatsapp.replace(/\D/g, '');
 
   if (view === 'selection') {
     return (

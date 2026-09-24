@@ -73,12 +73,6 @@
       work out *who* this is and *what* he sells — it sits in the raw HTML, so
       crawlers that don't run JavaScript (most AI crawlers) still get the full
       picture even though the page itself renders client-side.
-
-      TODO(Ali): fill `sameAs` with your GitHub, LinkedIn and any profile you
-      control (Upwork, Fiverr, X, Instagram). Matching profiles across sites are
-      the strongest signal that these are all one real person, and it's the
-      cheapest ranking win left on this page. Add `telephone` too once the
-      WhatsApp number goes in src/data/profile.ts.
     -->
     <script type="application/ld+json">
       {
@@ -92,7 +86,7 @@
             "url": "https://aliaftab.dev/",
             "image": "https://aliaftab.dev/me.webp",
             "email": "mailto:hello@aliaftab.dev",
-            "telephone": "+923204621535",
+            "telephone": "+923294862198",
             "jobTitle": "Full-Stack Engineer",
             "description": "Full-stack software engineer building fast websites, storefronts, mobile apps, WhatsApp automation bots and AI call agents.",
             "address": {
@@ -126,7 +120,7 @@
             "url": "https://aliaftab.dev/",
             "image": "https://aliaftab.dev/me.webp",
             "email": "mailto:hello@aliaftab.dev",
-            "telephone": "+923204621535",
+            "telephone": "+923294862198",
             "founder": { "@id": "https://aliaftab.dev/#person" },
             "priceRange": "PKR 25,000–150,000+",
             "address": {
@@ -262,7 +256,7 @@
         "sameAs": [
           "https://www.linkedin.com/in/aliaftab-dev/",
           "https://github.com/aliaftab-tech",
-          "https://wa.me/923204621535"
+          "https://wa.me/923294862198"
         ]
       }
     </script>
@@ -273,7 +267,7 @@
 
     <!--
       The page renders client-side, so a crawler that doesn't execute
-      JavaScript sees an empty <div id="root">. This block is the no-JS
+      JavaScript sees an empty root div. This block is the no-JS
       fallback: the same facts as the rendered page, in plain HTML. Keep it in
       step with src/data/profile.ts and src/data/projects.ts — it only helps
       while it says the same thing the visible page says.

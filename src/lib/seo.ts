@@ -119,9 +119,9 @@ function blogMeta(): PageMeta {
           // crawler that reads one page of this site gets the whole index.
           blogPost: POSTS_BY_DATE.map((post) => ({
             '@type': 'BlogPosting',
-            '@id': `${abs(`/blog/${post.slug}`)}#post`,
+            '@id': abs('/blog/' + post.slug) + '#post',
             headline: post.title,
-            url: abs(`/blog/${post.slug}`),
+            url: abs('/blog/' + post.slug),
             datePublished: post.published,
           })),
         },
@@ -165,7 +165,7 @@ function postMeta(slug: string): PageMeta | null {
           articleSection: post.topic,
           isPartOf: { '@id': `${abs('/blog')}#blog` },
           ...(post.relatedService
-            ? { about: { '@id': `${abs(`/services/${post.relatedService}`)}#service` } }
+            ? { about: { '@id': abs('/services/' + post.relatedService) + '#service' } }
             : {}),
         },
         breadcrumbs([
@@ -284,7 +284,7 @@ function caseStudyMeta(slug: string): PageMeta | null {
  * script, the client-side title updater, and the sitemap generator.
  */
 export function metaForPath(pathname: string): PageMeta {
-  const path = pathname.replace(/\/+$/, '') || '/';
+  const path = pathname.replace(/\/$/, '') || '/';
 
   if (path === '/') return homeMeta();
   if (path === '/chat') return chatMeta();
@@ -318,7 +318,7 @@ export const ALL_PATHS: string[] = [
   ...PROJECTS.map((p) => `/work/${p.slug}`),
 ];
 
-const escapeAttr = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+const escapeAttr = (value: string) => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;');
 
 /**
  * The `<head>` block for a page, as a string. The prerender script drops this
@@ -332,7 +332,7 @@ export function renderHead(meta: PageMeta): string {
   const description = escapeAttr(meta.description);
 
   const tags = [
-    `<title>${meta.title.replace(/</g, '&lt;')}</title>`,
+    `<title>${meta.title.replaceAll('<', '&lt;')}</title>`,
     `<meta name="description" content="${description}" />`,
     `<meta name="author" content="${SITE.name}" />`,
     '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />',
@@ -354,9 +354,8 @@ export function renderHead(meta: PageMeta): string {
   ];
 
   if (meta.jsonLd) {
-    tags.push(
-      `<script type="application/ld+json">${JSON.stringify(meta.jsonLd).replace(/</g, '\\u003c')}</script>`
-    );
+    const escaped = JSON.stringify(meta.jsonLd).replaceAll('<', String.raw`\u003c`);
+    tags.push(`<script type="application/ld+json">${escaped}</script>`);
   }
 
   return tags.join('\n    ');
