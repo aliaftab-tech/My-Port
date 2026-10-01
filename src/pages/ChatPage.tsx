@@ -8,7 +8,6 @@ import MessageBubble from '../components/chat/MessageBubble';
 import { PROFILE } from '../data/profile';
 import {
   ChatError,
-  MODEL_LABEL,
   makeMessage,
   streamChat,
   toWire,
@@ -352,9 +351,7 @@ export default function ChatPage() {
         </p>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          <span className="hidden text-[10px] uppercase tracking-[0.16em] text-[#D7E2EA]/30 lg:inline">
-            {MODEL_LABEL}
-          </span>
+
 
           <button
             type="button"
