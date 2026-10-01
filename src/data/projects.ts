@@ -7,11 +7,7 @@ export type ProjectImage = {
 /**
  * The long-form version, shown at /work/<slug>.
  *
- * TODO(Ali): what's missing here is numbers, and numbers are what convince
- * people — students enrolled, orders in the first month, load time before and
- * after, hours saved a week. Add them to `results` as you can honestly state
- * them, and a one-line client quote to `testimonial` if you can get one. A
- * case study without a figure in it reads as a description; with one it reads
+ * A case study without a figure in it reads as a description; with one it reads
  * as evidence, and it's the sentence an AI assistant quotes.
  */
 export type CaseStudy = {

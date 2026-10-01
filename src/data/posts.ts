@@ -30,12 +30,9 @@ export type Post = {
   metaDescription?: string;
   /**
    * ISO date, and it has to be the real one.
-   *
-   * TODO(Ali): these are all set to the day the section was built. Set each to
-   * the date the post actually goes live — `datePublished` ships in the
-   * BlogPosting markup, so a wrong date here is a wrong date in Google's index,
-   * and a post that claims to be older than the domain is a bad first
-   * impression to give a crawler.
+   * `datePublished` ships in the BlogPosting markup, so a wrong date here is a
+   * wrong date in Google's index, and a post that claims to be older than the
+   * domain is a bad first impression to give a crawler.
    */
   published: string;
   updated?: string;

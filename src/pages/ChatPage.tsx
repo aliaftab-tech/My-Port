@@ -33,6 +33,7 @@ const SUGGESTIONS = [
   'Can he build an online store for my business?',
   'How do I start a project with Ali?',
   'Show me work like the thing I need',
+  'How can I contact Ali?',
 ];
 
 /**
@@ -137,27 +138,31 @@ export default function ChatPage() {
     setStreaming(true);
     setError(null);
     setPinned(true);
-    setConversations((prev) =>
-      prev.map((conversation) =>
-        conversation.id === conversationId
-          ? { ...conversation, messages: [...history, reply], updatedAt: Date.now() }
-          : conversation
-      )
-    );
+    setConversations((prev) => {
+      const next = [...prev];
+      const convIndex = next.findIndex((c) => c.id === conversationId);
+      if (convIndex !== -1) {
+        next[convIndex] = { ...next[convIndex], messages: [...history, reply], updatedAt: Date.now() };
+      }
+      return next;
+    });
 
     const write = (patch: Partial<ChatMessage>) => {
-      setConversations((prev) =>
-        prev.map((conversation) =>
-          conversation.id === conversationId
-            ? {
-                ...conversation,
-                messages: conversation.messages.map((message) =>
-                  message.id === reply.id ? { ...message, ...patch } : message
-                ),
-              }
-            : conversation
-        )
-      );
+      setConversations((prev) => {
+        const next = [...prev];
+        const convIndex = next.findIndex((c) => c.id === conversationId);
+        if (convIndex === -1) return prev;
+        
+        const conv = next[convIndex];
+        const msgIndex = conv.messages.findIndex((m) => m.id === reply.id);
+        if (msgIndex === -1) return prev;
+
+        const msgs = [...conv.messages];
+        msgs[msgIndex] = { ...msgs[msgIndex], ...patch };
+        next[convIndex] = { ...conv, messages: msgs };
+        
+        return next;
+      });
     };
 
     const flush = () => {
@@ -166,7 +171,7 @@ export default function ChatPage() {
     };
 
     const schedule = () => {
-      if (frameRef.current === null) frameRef.current = requestAnimationFrame(flush);
+      frameRef.current ??= requestAnimationFrame(flush);
     };
 
     const controller = new AbortController();
@@ -187,12 +192,12 @@ export default function ChatPage() {
           schedule();
         },
       });
-    } catch (thrown) {
-      const stopped = thrown instanceof DOMException && thrown.name === 'AbortError';
+    } catch (error_) {
+      const stopped = error_ instanceof DOMException && error_.name === 'AbortError';
       if (!stopped) {
         failure =
-          thrown instanceof ChatError
-            ? thrown.message
+          error_ instanceof ChatError
+            ? error_.message
             : 'Unable to connect to the assistant. Please verify your internet connection and try again.';
       }
     } finally {
@@ -205,16 +210,15 @@ export default function ChatPage() {
         write({ content: failure, reasoning: buffer.reasoning || undefined, failed: true });
       } else if (!buffer.content) {
         // Stopped before the first token — an empty bubble would look broken.
-        setConversations((prev) =>
-          prev.map((conversation) =>
-            conversation.id === conversationId
-              ? {
-                  ...conversation,
-                  messages: conversation.messages.filter((message) => message.id !== reply.id),
-                }
-              : conversation
-          )
-        );
+        setConversations((prev) => {
+          const next = [...prev];
+          const convIndex = next.findIndex((c) => c.id === conversationId);
+          if (convIndex !== -1) {
+            const conv = next[convIndex];
+            next[convIndex] = { ...conv, messages: conv.messages.filter((m) => m.id !== reply.id) };
+          }
+          return next;
+        });
       } else {
         write({ content: buffer.content, reasoning: buffer.reasoning || undefined });
         if (failure) setError(failure);
@@ -235,18 +239,20 @@ export default function ChatPage() {
     const history = [...active.messages, question];
 
     setDraft('');
-    setConversations((prev) =>
-      prev.map((conversation) =>
-        conversation.id === active.id
-          ? {
-              ...conversation,
-              title: conversation.messages.length === 0 ? titleFrom(content) : conversation.title,
-              messages: history,
-              updatedAt: Date.now(),
-            }
-          : conversation
-      )
-    );
+    setConversations((prev) => {
+      const next = [...prev];
+      const convIndex = next.findIndex((c) => c.id === active.id);
+      if (convIndex !== -1) {
+        const conv = next[convIndex];
+        next[convIndex] = {
+          ...conv,
+          title: conv.messages.length === 0 ? titleFrom(content) : conv.title,
+          messages: history,
+          updatedAt: Date.now(),
+        };
+      }
+      return next;
+    });
 
     void runTurn(active.id, history);
   };
@@ -453,7 +459,7 @@ export default function ChatPage() {
                   }
                 />
               ))}
-              {!streaming && messages[messages.length - 1]?.role === 'assistant' && availableSuggestions.length > 0 && (
+              {!streaming && messages.at(-1)?.role === 'assistant' && availableSuggestions.length > 0 && (
                 <div className="ml-11">
                   <ul className="flex flex-wrap gap-2.5">
                     {availableSuggestions.map((suggestion) => (

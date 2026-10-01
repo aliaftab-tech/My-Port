@@ -68,7 +68,7 @@ export default function MarqueeSection() {
     // Coalesce scroll events into one write per frame so the transform never
     // fights the browser's own scrolling work.
     const onScroll = () => {
-      if (frame === null) frame = requestAnimationFrame(update);
+      frame ??= requestAnimationFrame(update);
     };
 
     const onResize = () => {
@@ -104,8 +104,8 @@ function Row({
   innerRef,
   images,
 }: {
-  innerRef: React.RefObject<HTMLDivElement | null>;
-  images: MarqueeTile[];
+  readonly innerRef: React.RefObject<HTMLDivElement | null>;
+  readonly images: readonly MarqueeTile[];
 }) {
   // Tripled so there is always more strip either side of the viewport.
   const tiles = [...images, ...images, ...images];

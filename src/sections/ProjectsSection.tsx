@@ -51,10 +51,10 @@ function ProjectCard({
   total,
   progress,
 }: {
-  project: Project;
-  index: number;
-  total: number;
-  progress: MotionValue<number>;
+  readonly project: Project;
+  readonly index: number;
+  readonly total: number;
+  readonly progress: MotionValue<number>;
 }) {
   // Cards deeper in the stack end up scaled down the furthest, so the ones
   // already parked behind stay visible as a stepped edge.
@@ -173,7 +173,7 @@ function ProjectCard({
  * cropped — the plate is 2:1 and the source is square, so there is always
  * margin left over.
  */
-function LogoPlate({ image, name }: { image?: ProjectImage; name: string }) {
+function LogoPlate({ image, name }: { readonly image?: ProjectImage; readonly name: string }) {
   return (
     <div
       className="flex aspect-[2/1] w-full shrink-0 items-center justify-center overflow-hidden
@@ -212,9 +212,9 @@ function PhoneFrame({
   alt,
   className = '',
 }: {
-  image: ProjectImage;
-  alt: string;
-  className?: string;
+  readonly image: ProjectImage;
+  readonly alt: string;
+  readonly className?: string;
 }) {
   return (
     <div
@@ -252,11 +252,11 @@ function BrowserFrame({
   href,
   className = '',
 }: {
-  image: ProjectImage;
-  alt: string;
+  readonly image: ProjectImage;
+  readonly alt: string;
   /** Shown in the address pill. Omitted for work that isn't publicly live. */
-  href?: string;
-  className?: string;
+  readonly href?: string;
+  readonly className?: string;
 }) {
   return (
     <div

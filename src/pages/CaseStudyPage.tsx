@@ -157,7 +157,7 @@ export default function CaseStudyPage() {
             </FadeIn>
 
             {section.body.map((paragraph, p) => (
-              <FadeIn key={p} delay={p * 0.05} y={20}>
+              <FadeIn key={paragraph} delay={p * 0.05} y={20}>
                 <p
                   className="mb-5 max-w-3xl font-light leading-relaxed text-[#D7E2EA] opacity-75"
                   style={{ fontSize: 'clamp(0.95rem, 1.7vw, 1.2rem)' }}
@@ -285,7 +285,7 @@ export default function CaseStudyPage() {
   );
 }
 
-function Fact({ label, value }: { label: string; value: string }) {
+function Fact({ label, value }: { readonly label: string; readonly value: string }) {
   return (
     <div className="flex flex-col gap-1">
       <dt className="text-xs font-light uppercase tracking-widest text-[#D7E2EA] opacity-40">
